@@ -9,12 +9,11 @@ unsigned long get_tokens(unsigned long storage, char *tokens, unsigned long *tk_
 	return kc_funcs->KC_GetTokens(storage, tokens, tk_count);
 }
 */
-
 import "C"
 import "unsafe"
 
-// Obtains pointer to a string of connected storage devices and their number.
-func (m *Module) GetTokens(store StoreType) (string, error) {
+// Obtains a string of connected storage devices and their number.
+func (m *Module) GetTokens(store StoreType) (string, int, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -26,11 +25,9 @@ func (m *Module) GetTokens(store StoreType) (string, error) {
 
 	err := m.wrapError(rc)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	tokens := C.GoString((*C.char)(cTokens))
-
-	return tokens, nil
+	return C.GoString((*C.char)(cTokens)), int(count), nil
 
 }
