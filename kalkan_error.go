@@ -15,7 +15,7 @@ func (e kalkanError) Error() string {
 	return fmt.Sprintf("[%s] %s: %s", e.errorCode.Hex(), e.errorCode.String(), e.errorString)
 }
 
-// GetErrorCode извлекает из ошибки ErrorCode из ошибка типа KalkanError.
+// Extracts ErrorCode from error.
 func GetErrorCode(err error) (ErrorCode, bool) {
 	var kalkanErr kalkanError
 	if errors.As(err, &kalkanErr) {
