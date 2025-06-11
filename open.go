@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-// Obtains the new client.
+// Obtains the pointer ro the Module.
 func Open(libName string) (*Module, error) {
 	h, err := dlOpen(libName)
 	if err != nil {
