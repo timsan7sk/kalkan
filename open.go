@@ -9,14 +9,7 @@ package kalkan
 import "C"
 import (
 	"sync"
-	"unsafe"
 )
-
-// Module struct for interaction with the KalkanCrypt library.
-type Module struct {
-	h  unsafe.Pointer // handle to a library (.so).
-	mu sync.Mutex     // mutual exclusion lock.
-}
 
 // Obtains the new client.
 func Open(libName string) (*Module, error) {
