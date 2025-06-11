@@ -9,7 +9,6 @@ unsigned long set_proxy(int flags, char *inProxyAddr, char *inProxyPort, char *i
 	return kc_funcs->KC_SetProxy(flags, inProxyAddr, inProxyPort, inUser, inPass);
 }
 */
-
 import "C"
 import (
 	"fmt"
@@ -31,11 +30,11 @@ func (m *Module) SetProxy(flag Flag, url *url.URL) error {
 	defer C.free(unsafe.Pointer(cPort))
 
 	cUser := C.CString(url.User.Username())
-	defer C.free(unsafe.Pointer(cProxyUser))
+	defer C.free(unsafe.Pointer(cUser))
 
 	pass, _ := url.User.Password()
 	cPass := C.CString(pass)
-	defer C.free(unsafe.Pointer(cProxyPass))
+	defer C.free(unsafe.Pointer(cPass))
 
 	rc := int(C.set_proxy(C.int(int(flag)), cAddr, cPort, cUser, cPass))
 

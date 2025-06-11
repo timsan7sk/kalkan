@@ -23,7 +23,7 @@ const (
 )
 
 // Hashes data.
-func (m *Module) HashData(alg HashAlg, flag Flag, inData string) error {
+func (m *Module) HashData(alg HashAlg, flag Flag, inData string) (string, error) {
 
 	m.mu.Lock()
 	defer m.mu.Unlock()
