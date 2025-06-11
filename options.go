@@ -20,6 +20,8 @@ func (m *Module) Options() Options {
 	return m.o
 }
 
+type Option func(o *Options) error
+
 func (o *Options) setDefaults() {
 	if o == nil {
 		return
