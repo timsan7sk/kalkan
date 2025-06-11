@@ -12,9 +12,6 @@ import (
 	"unsafe"
 )
 
-// Library name.
-// var libName = getLibraryName()
-
 // Module struct for interaction with the KalkanCrypt library.
 type Module struct {
 	h  unsafe.Pointer // handle to a library (.so).
