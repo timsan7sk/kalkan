@@ -15,7 +15,7 @@ import (
 )
 
 // Sets the TSA service address.
-func (m *Module) TSASetURL(url string) {
+func (m *Module) TSASetURL(url string) error {
 	// locking the module and unlocking it after completion.
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -24,4 +24,5 @@ func (m *Module) TSASetURL(url string) {
 	defer C.free(unsafe.Pointer(cTSA))
 	// set up a TSA service address.
 	C.set_tsa_url(cTSA)
+	return nil
 }

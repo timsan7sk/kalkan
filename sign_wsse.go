@@ -36,8 +36,8 @@ func (m *Module) SignWSSE(alias, inData, signNodeID string, flags Flag) (string,
 	// singing data.
 	rc := int(C.sign_wsse(cAlias, C.int(flags), cInData, C.int(inDataLength), (*C.uchar)(outSign), (*C.int)(unsafe.Pointer(&outSignLength)), cSignNodeID))
 
-	err := m.wrapError(rc)
-	if err != nil {
+	// checking for errors.
+	if err := m.wrapError(rc); err != nil {
 		return "", err
 	}
 	return C.GoString((*C.char)(outSign)), nil

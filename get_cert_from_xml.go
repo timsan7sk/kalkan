@@ -26,8 +26,8 @@ func (m *Module) GetCertFromXML(xml string, signID int) ([]byte, error) {
 
 	rc := int(C.get_cert_from_xml(cXML, C.int(len(xml)), C.int(signID), (*C.char)(outCert), (*C.int)(unsafe.Pointer(&outCertLen))))
 
-	err := m.wrapError(rc)
-	if err != nil {
+	// checking for errors.
+	if err := m.wrapError(rc); err != nil {
 		return nil, err
 	}
 	return C.GoBytes(unsafe.Pointer(outCert), C.int(outCertLen)), nil

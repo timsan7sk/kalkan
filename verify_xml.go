@@ -31,9 +31,8 @@ func (m *Module) VerifyXML(alias, inData string, flags Flag) (string, error) {
 
 	// verifing XML data.
 	rc := int(C.verify_xml(cAlias, C.int(flags), cInData, C.int(len(inData)), (*C.char)(outVerifyInfo), (*C.int)(unsafe.Pointer(&outVerifyInfoLen))))
-
-	err := m.wrapError(rc)
-	if err != nil {
+	// checking for errors.
+	if err := m.wrapError(rc); err != nil {
 		return "", err
 	}
 	return C.GoString((*C.char)(outVerifyInfo)), nil

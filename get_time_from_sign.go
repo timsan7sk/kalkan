@@ -27,11 +27,9 @@ func (m *Module) GetTimeFromSign(cms string, sigID int, flag Flag) (time.Time, e
 	outDateTime := C.time_t(0)
 	rc := int(C.get_time_from_sign(cCMS, C.int(len(cms)), C.int(int(flag)), C.int(sigID), &outDateTime))
 
-	err := m.wrapError(rc)
-	if err != nil {
+	// checking for errors.
+	if err := m.wrapError(rc); err != nil {
 		return time.Time{}, err
 	}
-
 	return time.Unix(int64(outDateTime), 0).UTC(), nil
-
 }
