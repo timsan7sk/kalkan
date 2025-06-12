@@ -5,7 +5,7 @@ package kalkan
 #include <dlfcn.h>
 #include "KalkanCrypt.h"
 
-	load_key_store(int storage, char *password, int passLen, char *container, int containerLen, char *alias) {
+	int load_key_store(int storage, char *password, int passLen, char *container, int containerLen, char *alias) {
 		return kc_funcs->KC_LoadKeyStore(storage, password, passLen, container, containerLen, alias);
 	}
 */

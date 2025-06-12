@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-// Obtains the pointer ro the Module.
+// Obtains the pointer to the Module.
 func Open(libName string) (*Module, error) {
 	h, err := dlOpen(libName)
 	if err != nil {
