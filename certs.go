@@ -9,13 +9,13 @@ import (
 
 type Certs struct {
 	Cert *x509.Certificate
-	Type CertType
+	Type int
 }
 
 // Data for downloading certificate.
 type dataForLoadCert struct {
 	url      string
-	certType CertType
+	certType int
 }
 
 // Data for downloading certificates.
