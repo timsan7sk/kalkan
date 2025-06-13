@@ -30,4 +30,5 @@ func TestMain(m *testing.M) {
 	if err := mod.Init(); err != nil {
 		fmt.Println(err)
 	}
+	m.Run()
 }

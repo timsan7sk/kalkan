@@ -21,11 +21,11 @@ type Method struct {
 }
 
 var (
-	err  error
-	mod  *kalkan.Module
-	path string
-	pwd  string
-	flag kalkan.Flag
+	err   error
+	mod   *kalkan.Module
+	path  string      = "../test/gost1.p12"
+	pwd   string      = "Qwerty12"
+	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
 )
 
 func (m *Method) Alg() string {
@@ -44,7 +44,7 @@ func (m *Method) Sign(inData string) (string, error) {
 	if err := m.LoadKeyStore(); err != nil {
 		return "", err
 	}
-	v, err := m.Module.SignData("", inData, "", flag)
+	v, err := m.Module.SignData("", inData, "", flags)
 	if err != nil {
 		return "", err
 	}
