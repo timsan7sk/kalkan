@@ -1,12 +1,8 @@
 package jwt
 
-import "time"
-
-// Claims must just have a Valid method that determines
-// if the token is invalid for any supported reason
-type Claims interface {
-	Valid() error
-}
+import (
+	"time"
+)
 
 // RegisteredClaims are a structured version of the JWT Claims Set,
 // restricted to Registered Claim Names, as referenced at
@@ -17,7 +13,7 @@ type Claims interface {
 // therefore is to embedded this in a user-defined claim type.
 //
 // See examples for how to use this with your own claim types.
-type RegisteredClaims struct {
+type Claims struct {
 	// the `iss` (Issuer) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.1
 	Issuer string `json:"iss,omitempty"`
 
@@ -42,13 +38,5 @@ type RegisteredClaims struct {
 	//
 	BIN string `json:"cbin,omitempty"`
 	//
-	MCheck string `json:"mcheck"`
-}
-
-// Valid validates time based claims "exp, iat, nbf".
-// There is no accounting for clock skew.
-// As well, if any of the above claims are not in the token, it will still
-// be considered a valid claim.
-func (c RegisteredClaims) Valid() error {
-	return nil
+	Check string `json:"mcheck,omitempty"`
 }
