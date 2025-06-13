@@ -10,3 +10,20 @@ type Token struct {
 	Signature string                 // The third segment of the token.  Populated when you Parse a token
 	Valid     bool                   // Is the token valid?  Populated when you Parse/Verify a token
 }
+
+// New creates a new Token with the specified signing method and an empty map of claims.
+func New(method SigningMethod) *Token {
+	return NewWithClaims(method, MapClaims{})
+}
+
+// NewWithClaims creates a new Token with the specified signing method and claims.
+func NewWithClaims(method SigningMethod, claims Claims) *Token {
+	return &Token{
+		Header: map[string]interface{}{
+			"typ": "JWT",
+			"alg": method.Alg(),
+		},
+		Claims: claims,
+		Method: method,
+	}
+}
