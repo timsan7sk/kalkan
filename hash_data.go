@@ -23,7 +23,7 @@ const (
 )
 
 // Hashes data.
-func (m *Module) HashData(alg HashAlg, flag Flag, inData string) (string, error) {
+func (m *Module) HashData(alg HashAlg, flags Flag, inData string) (string, error) {
 
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -38,7 +38,7 @@ func (m *Module) HashData(alg HashAlg, flag Flag, inData string) (string, error)
 	outData := C.malloc(C.ulong(C.sizeof_uchar * outDataLength))
 	defer C.free(outData)
 
-	rc := int(C.hash_data(cAlg, C.int(int(flag)), cInData, C.int(inDataLength), (*C.uchar)(outData), (*C.int)(unsafe.Pointer(&outDataLength))))
+	rc := int(C.hash_data(cAlg, C.int(int(flags)), cInData, C.int(inDataLength), (*C.uchar)(outData), (*C.int)(unsafe.Pointer(&outDataLength))))
 
 	return C.GoString((*C.char)(outData)), m.wrapError(rc)
 

@@ -15,7 +15,7 @@ type Options struct {
 	LoadCerts bool    `json:"load_certs"` // Do need to load root CA certificates and intermediate CA certificates.
 }
 
-// Gets module options.
+// Obtains module options.
 func (m *Module) Options() Options {
 	return m.o
 }
