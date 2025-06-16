@@ -36,8 +36,15 @@ func NewWithClaims(method Method, claims Claims) *Token {
 	}
 }
 
-func (t Token) String() (out string) {
-	b, err := json.Marshal(t)
+func (h header) String() (out string) {
+	b, err := json.Marshal(h)
+	if err == nil {
+		out = string(b)
+	}
+	return
+}
+func (c Claims) String() (out string) {
+	b, err := json.Marshal(c)
 	if err == nil {
 		out = string(b)
 	}

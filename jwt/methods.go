@@ -49,7 +49,7 @@ func (m *Method) LoadKeyStore() error {
 }
 
 // Sign implements token signing for the Method.
-func (m *Method) Sign(inData string) (string, error) {
+func (m *Method) Sign(inData string) (signature, error) {
 
 	if err := m.LoadKeyStore(); err != nil {
 		return "", err
@@ -59,5 +59,5 @@ func (m *Method) Sign(inData string) (string, error) {
 		return "", err
 	}
 	defer m.Module.Finalize()
-	return v, nil
+	return signature(v), nil
 }
