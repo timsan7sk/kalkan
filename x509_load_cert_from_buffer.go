@@ -14,7 +14,7 @@ import (
 	"unsafe"
 )
 
-// Loads a certificate from a bite slice.
+// Loads a certificate from a byte slice.
 func (m *Module) X509LoadCertificateFromBuffer(inCert []byte, flags CertEncodingType) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
