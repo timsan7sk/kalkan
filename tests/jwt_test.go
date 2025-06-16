@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewToken(t *testing.T) {
+	var err error
 	issuedAt := time.Now().Local().Unix() - 120
 	expiresAt := time.Now().Local().Unix() + 900
 	var claims = jwt.Claims{
@@ -26,15 +27,11 @@ func TestNewToken(t *testing.T) {
 	if err := token.Method.LoadKeyStore(); err != nil {
 		t.Fatal(err)
 	}
-	s, err := token.StringBase64()
+	token.Signature, err = token.Method.Sign(token.StringBase64())
 	if err != nil {
 		t.Fatal(err)
 	}
-	token.Signature, err = token.Method.Sign(s)
-	if err != nil {
-		t.Fatal(err)
-	}
-	token.Raw = s + "." + token.ReplaceAll()
-	t.Logf("sign: %+s\n", token.Raw)
+	token.ReplaceAll()
+	t.Logf("Finish: %+s\n", token.Finish)
 
 }
