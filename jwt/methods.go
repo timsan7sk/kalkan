@@ -1,8 +1,6 @@
 package jwt
 
 import (
-	"fmt"
-
 	"pki.gov.kz/go/kalkan"
 )
 
@@ -17,24 +15,25 @@ type Methods interface {
 // Expects key type of []byte for both signing and validation
 type Method struct {
 	Name   string
-	Module *kalkan.Module
+	module *kalkan.Module
 }
 
 var (
 	err   error
-	path  string      = "gost1.p12"
-	pwd   string      = "Qwerty12"
+	path  string      = "GOST512.p12"
+	pwd   string      = "Qazwsx!@#123"
 	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
 )
 
-func (m *Method) Init() {
-	m.Module, err = kalkan.Open("libkalkancryptwr-64.so.2")
+func (m *Method) Init() error {
+	m.module, err = kalkan.Open("libkalkancryptwr-64.so.2")
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
-	if err := m.Module.Init(); err != nil {
-		fmt.Println(err)
+	if err := m.module.Init(); err != nil {
+		return err
 	}
+	return nil
 }
 
 func (m *Method) Alg() string {
@@ -44,20 +43,18 @@ func (m *Method) Verify(signingString, signature string) error {
 	return nil
 }
 func (m *Method) LoadKeyStore() error {
-	fmt.Println(m)
-	return m.Module.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12)
+	return m.module.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12)
 }
 
 // Sign implements token signing for the Method.
 func (m *Method) Sign(inData string) (signature, error) {
-
 	if err := m.LoadKeyStore(); err != nil {
 		return "", err
 	}
-	v, err := m.Module.SignData("", inData, "", flags)
+	v, err := m.module.SignData("", inData, "", flags)
 	if err != nil {
 		return "", err
 	}
-	defer m.Module.Finalize()
+	defer m.module.Finalize()
 	return signature(v), nil
 }

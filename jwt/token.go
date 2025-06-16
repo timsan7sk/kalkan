@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"strings"
 )
@@ -8,7 +9,7 @@ import (
 type header map[string]any
 type signature string
 
-// Token represents a JWT Token.  Different fields will be used depending on whether you're
+// Represents a JWT Token.  Different fields will be used depending on whether you're
 // creating or parsing/verifying a token.
 type Token struct {
 	Raw       string    `json:"-"`                // The raw token.  Populated when you Parse a token
@@ -19,12 +20,12 @@ type Token struct {
 	Valid     bool      `json:"-"`                // Is the token valid?  Populated when you Parse/Verify a token
 }
 
-// New creates a new Token with the specified signing method and an empty map of claims.
+// Creates a new Token with the specified signing method and an empty map of claims.
 func New(method Method) *Token {
 	return NewWithClaims(method, Claims{})
 }
 
-// NewWithClaims creates a new Token with the specified signing method and claims.
+// Creates a new Token with the specified signing method and claims.
 func NewWithClaims(method Method, claims Claims) *Token {
 	return &Token{
 		Header: header{
@@ -36,22 +37,27 @@ func NewWithClaims(method Method, claims Claims) *Token {
 	}
 }
 
-func (h header) String() (out string) {
-	b, err := json.Marshal(h)
-	if err == nil {
-		out = string(b)
-	}
-	return
+func (t *Token) Parse() {
+
 }
-func (c Claims) String() (out string) {
-	b, err := json.Marshal(c)
-	if err == nil {
-		out = string(b)
+
+// Obtains Header and Claims fields of Token in Base64 string
+func (t Token) StringBase64() (string, error) {
+	h, err := json.Marshal(t.Header)
+	if err != nil {
+		return "", err
 	}
-	return
+	c, err := json.Marshal(t.Claims)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(h) + "." + base64.StdEncoding.EncodeToString(c), nil
 }
-func (s signature) ToBase64() (out string) {
-	out = strings.ReplaceAll(string(s), "/", "_")
+
+// Replaces "/" to "_" and "+" to "-" and "=" to "".
+func (t Token) ReplaceAll() (out string) {
+
+	out = strings.ReplaceAll(string(t.Signature), "/", "_")
 	out = strings.ReplaceAll(out, "+", "-")
 	out = strings.ReplaceAll(out, "=", "")
 	return

@@ -1,10 +1,6 @@
 package jwt
 
-import (
-	"time"
-)
-
-// RegisteredClaims are a structured version of the JWT Claims Set,
+// Claims are a structured version of the JWT Claims Set,
 // restricted to Registered Claim Names, as referenced at
 // https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
 //
@@ -24,13 +20,13 @@ type Claims struct {
 	Audience []string `json:"aud,omitempty"`
 
 	// the `exp` (Expiration Time) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4
-	ExpiresAt *time.Time `json:"exp,omitempty"`
+	ExpiresAt int64 `json:"exp,omitempty"`
 
 	// the `nbf` (Not Before) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.5
-	NotBefore *time.Time `json:"nbf,omitempty"`
+	NotBefore int64 `json:"nbf,omitempty"`
 
 	// the `iat` (Issued At) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.6
-	IssuedAt *time.Time `json:"iat,omitempty"`
+	IssuedAt int64 `json:"iat,omitempty"`
 
 	// the `jti` (JWT ID) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.7
 	ID string `json:"jti,omitempty"`
