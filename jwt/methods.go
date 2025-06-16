@@ -22,11 +22,20 @@ type Method struct {
 
 var (
 	err   error
-	mod   *kalkan.Module
-	path  string      = "../test/gost1.p12"
+	path  string      = "gost1.p12"
 	pwd   string      = "Qwerty12"
 	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
 )
+
+func (m *Method) Init() {
+	m.Module, err = kalkan.Open("libkalkancryptwr-64.so.2")
+	if err != nil {
+		fmt.Println(err)
+	}
+	if err := m.Module.Init(); err != nil {
+		fmt.Println(err)
+	}
+}
 
 func (m *Method) Alg() string {
 	return m.Name
@@ -35,6 +44,7 @@ func (m *Method) Verify(signingString, signature string) error {
 	return nil
 }
 func (m *Method) LoadKeyStore() error {
+	fmt.Println(m)
 	return m.Module.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12)
 }
 
@@ -50,15 +60,4 @@ func (m *Method) Sign(inData string) (string, error) {
 	}
 	defer m.Module.Finalize()
 	return v, nil
-
-}
-
-func init() {
-	mod, err = kalkan.Open("libkalkancryptwr-64.so.2")
-	if err != nil {
-		fmt.Println(err)
-	}
-	if err := mod.Init(); err != nil {
-		fmt.Println(err)
-	}
 }

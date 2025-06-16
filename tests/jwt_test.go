@@ -22,4 +22,15 @@ func TestNewToken(t *testing.T) {
 	}
 	token := jwt.NewWithClaims(method, claims)
 	t.Logf("token: %+s\n", token.String())
+	token.Method.Init()
+	if err := token.Method.LoadKeyStore(); err != nil {
+		t.Log(err)
+	}
+	s, err := token.Method.Sign(token.String())
+	if err != nil {
+		t.Log(err)
+	} else {
+		t.Logf("sign: %+s\n", s)
+
+	}
 }
