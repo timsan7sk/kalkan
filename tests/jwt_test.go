@@ -13,7 +13,6 @@ const (
 )
 
 func TestNewToken(t *testing.T) {
-	var err error
 	issuedAt := time.Now().Local().Unix() - 120
 	expiresAt := time.Now().Local().Unix() + 900
 	var claims = jwt.Claims{
@@ -26,13 +25,13 @@ func TestNewToken(t *testing.T) {
 		Name: "GOST15",
 	}
 	token := jwt.NewWithClaims(method, claims)
-	if err := token.Method.Open(libName); err != nil {
+	if err = token.Method.Open(libName); err != nil {
 		t.Fatal(err)
 	}
-	if err := token.Method.Init(); err != nil {
+	if err = token.Method.Init(); err != nil {
 		t.Fatal(err)
 	}
-	if err := token.Method.LoadKeyStore(path, pwd); err != nil {
+	if err = token.Method.LoadKeyStore(path, pwd); err != nil {
 		t.Fatal(err)
 	}
 	token.Signature, err = token.Method.Sign(token.StringBase64())
@@ -41,4 +40,9 @@ func TestNewToken(t *testing.T) {
 	}
 	token.ReplaceAll()
 	t.Logf("Finish: %+s\n", token.Finish)
+	token.Method.Finialize()
+	if err = token.Method.Close(); err != nil {
+		t.Fatal(err)
+	}
+
 }
