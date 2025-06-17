@@ -43,5 +43,5 @@ func (m *Module) X509ValidateCertificate(inCert string, validateType ValidateTyp
 	rc := int(C.x509_validate_certificate(cInCert, C.int(len(inCert)), C.int(int(validateType)), cValidPath, 0, (*C.char)(unsafe.Pointer(&kcOutInfo)), (*C.int)(unsafe.Pointer(&kcOutInfoLen)), 0, (*C.char)(unsafe.Pointer(&kcGetResp)), (*C.int)(unsafe.Pointer(&kcGetRespLen))))
 
 	// return result and checking for errors.
-	return string(byteSlice(kcOutInfo[:])), m.wrapError(rc)
+	return string(trimSlice(kcOutInfo[:])), m.wrapError(rc)
 }

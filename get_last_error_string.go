@@ -20,5 +20,5 @@ func (m *Module) GetLastErrorString() (ErrorCode, string) {
 	errLen := 65534
 	var errStr [65534]byte
 	rc := int64(C.get_last_error_string((*C.char)(unsafe.Pointer(&errStr)), (*C.int)(unsafe.Pointer(&errLen))))
-	return ErrorCode(rc), string(byteSlice(errStr[:]))
+	return ErrorCode(rc), string(trimSlice(errStr[:]))
 }

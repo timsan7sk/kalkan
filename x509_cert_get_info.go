@@ -28,7 +28,7 @@ func (m *Module) X509CertificateGetInfo(inCert string, prop CertProp) (string, e
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	// preparing variable and freeing memory when finished.
+	// preparing variables and freeing memory when finished.
 	cInCert := C.CString(inCert)
 	defer C.free(unsafe.Pointer(cInCert))
 	outDataLength := 32768
