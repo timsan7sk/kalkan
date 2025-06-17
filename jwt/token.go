@@ -3,6 +3,7 @@ package jwt
 import (
 	"encoding/base64"
 	"encoding/json"
+	"reflect"
 	"strings"
 )
 
@@ -41,11 +42,17 @@ func (t *Token) Parse() {
 
 }
 
-// Marshal to JSON the t.Header and t.Claims, then encode them into a Base64 string.
+// Marshal to JSON the t.Header and t.Claims, then encode them into a "URL and Filename safe" Base64 string.
+// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
 func (t Token) StringBase64() string {
+	if reflect.DeepEqual(t.Header, header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
+		return ""
+	}
 	h, _ := json.Marshal(t.Header)
 	c, _ := json.Marshal(t.Claims)
-	return base64.StdEncoding.EncodeToString(h) + "." + base64.StdEncoding.EncodeToString(c)
+	e := base64.URLEncoding.WithPadding(base64.NoPadding)
+
+	return e.EncodeToString(h) + "." + e.EncodeToString(c)
 }
 
 // Replaces "/" to "_" and "+" to "-" and "=" to ""
