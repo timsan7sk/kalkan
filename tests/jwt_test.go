@@ -26,7 +26,7 @@ func TestNewToken(t *testing.T) {
 		Name: "GOST15",
 	}
 	token := jwt.NewWithClaims(method, claims)
-	if err := token.Method.Init(); err != nil {
+	if err := token.Method.Open(libName); err != nil {
 		t.Fatal(err)
 	}
 	if err := token.Method.Init(); err != nil {
@@ -41,5 +41,4 @@ func TestNewToken(t *testing.T) {
 	}
 	token.ReplaceAll()
 	t.Logf("Finish: %+s\n", token.Finish)
-
 }
