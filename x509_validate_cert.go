@@ -11,6 +11,7 @@ package kalkan
 //         if(outInfo[i] == '\r' && outInfo[i+1] != '\n') outInfo[i] = '\n';
 //     return rc;
 // }
+import "C"
 import (
 	"unsafe"
 )
@@ -21,10 +22,11 @@ const (
 
 // Validates the certificate.
 func (m *Module) X509ValidateCertificate(inCert string, validateType ValidateType, validatePath string) (string, error) {
-
+	// locking the module and unlocking it after completion.
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	// preparing variable and freeing memory when finished.
 	cInCert := C.CString(inCert)
 	defer C.free(unsafe.Pointer(cInCert))
 
@@ -37,7 +39,9 @@ func (m *Module) X509ValidateCertificate(inCert string, validateType ValidateTyp
 	var kcGetResp [length]byte
 	kcGetRespLen := length
 
+	// validating certificate.
 	rc := int(C.x509_validate_certificate(cInCert, C.int(len(inCert)), C.int(int(validateType)), cValidPath, 0, (*C.char)(unsafe.Pointer(&kcOutInfo)), (*C.int)(unsafe.Pointer(&kcOutInfoLen)), 0, (*C.char)(unsafe.Pointer(&kcGetResp)), (*C.int)(unsafe.Pointer(&kcGetRespLen))))
 
+	// return result and checking for errors.
 	return string(byteSlice(kcOutInfo[:])), m.wrapError(rc)
 }

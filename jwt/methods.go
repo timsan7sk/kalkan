@@ -18,18 +18,20 @@ type Method struct {
 	module *kalkan.Module
 }
 
-var (
-	err   error
-	path  string      = "GOST512.p12"
-	pwd   string      = "Qazwsx!@#123"
+var err error
+
+const (
 	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
 )
 
-func (m *Method) Init() error {
-	m.module, err = kalkan.Open("libkalkancryptwr-64.so.2")
+func (m *Method) Open(libName string) error {
+	m.module, err = kalkan.Open(libName)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+func (m *Method) Init() error {
 	if err := m.module.Init(); err != nil {
 		return err
 	}
@@ -42,15 +44,15 @@ func (m *Method) Alg() string {
 func (m *Method) Verify(signingString, signature string) error {
 	return nil
 }
-func (m *Method) LoadKeyStore() error {
+func (m *Method) LoadKeyStore(path, pwd string) error {
 	return m.module.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12)
 }
 
 // Sign implements token signing for the Method.
 func (m *Method) Sign(inData string) (signature, error) {
-	if err := m.LoadKeyStore(); err != nil {
-		return "", err
-	}
+	// if err := m.LoadKeyStore(); err != nil {
+	// 	return "", err
+	// }
 	v, err := m.module.SignData("", inData, "", flags)
 	if err != nil {
 		return "", err

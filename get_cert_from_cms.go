@@ -27,9 +27,6 @@ func (m *Module) GetCertFromCMS(cms string, signID int, flag Flag) (string, erro
 
 	// gitting certificate from cms.
 	rc := int(C.get_cert_from_cms(cCMS, C.int(len(cms)), C.int(signID), C.int(int(flag)), (*C.char)(outCert), (*C.int)(unsafe.Pointer(&outCertLen))))
-	// checking for errors.
-	if err := m.wrapError(rc); err != nil {
-		return "", err
-	}
-	return C.GoString((*C.char)(outCert)), nil
+	// return result checking for errors.
+	return C.GoString((*C.char)(outCert)), m.wrapError(rc)
 }
