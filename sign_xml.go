@@ -15,7 +15,7 @@ import (
 )
 
 // Signs data in XML format.
-func (m *Module) SignXML(xml, alias string, flags Flag, signNodeID, parentSignNode, parentNameSpace string) (signedXML string, err error) {
+func (m *Module) SignXML(xml, alias string, flags Flag, signNodeID, parentSignNode, parentNameSpace string) (string, error) {
 	// locking the module and unlocking it after completion.
 	m.mu.Lock()
 	defer m.mu.Unlock()
