@@ -7,11 +7,6 @@ import (
 	"pki.gov.kz/go/kalkan/jwt"
 )
 
-const (
-	path string = "GOST512.p12"
-	pwd  string = "Qazwsx!@#123"
-)
-
 func TestNewToken(t *testing.T) {
 	issuedAt := time.Now().Local().Unix() - 120
 	expiresAt := time.Now().Local().Unix() + 900

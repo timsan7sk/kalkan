@@ -9,8 +9,11 @@ import (
 	"pki.gov.kz/go/kalkan"
 )
 
-// Library name.
-const libName = "libkalkancryptwr-64.so.2"
+const (
+	libName = "libkalkancryptwr-64.so.2" // Library name.
+	path    = "GOST512.p12"
+	pwd     = "Qazwsx!@#123"
+)
 
 var (
 	// Error variable.
@@ -31,6 +34,9 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	if err = mod.Init(); err != nil {
+		fmt.Println(err)
+	}
+	if err = mod.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12); err != nil {
 		fmt.Println(err)
 	}
 	m.Run()
