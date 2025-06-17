@@ -3,6 +3,10 @@ package kalkan
 import "time"
 
 const (
+	OwnerIndividual   Owner = "individual"   // Certificate of an individual.
+	OwnerOrganization Owner = "organization" // Certificate of legal entity.
+)
+const (
 	CertSubjectRoleUndefined CertSubjectRole = iota
 	CertSubjectRoleCEO
 	CertSubjectRoleSign
@@ -13,7 +17,7 @@ const (
 
 type (
 	Summary struct {
-		Type         CertType
+		Owner        Owner
 		Subject      CertSubject
 		Organization *CertOrganization
 		Issuer       CertIssuer
@@ -22,7 +26,7 @@ type (
 		NotAfter     time.Time
 		NotBefore    time.Time
 	}
-	CertType        string
+	Owner           string // Defines the form of ownership of the certificate owner.
 	CertSubjectRole int
 	CertSubject     struct {
 		CommonName string
