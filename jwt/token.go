@@ -43,7 +43,7 @@ func (t *Token) Parse() {
 }
 
 // Marshal to JSON the t.Header and t.Claims, then encode them into a "URL and Filename safe" Base64 string.
-// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
+// see [RFC4648]https://datatracker.ietf.org/doc/html/rfc4648#page-8
 func (t Token) StringBase64() string {
 	if reflect.DeepEqual(t.Header, header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
 		return ""
