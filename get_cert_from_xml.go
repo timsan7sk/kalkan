@@ -13,7 +13,7 @@ import "C"
 import "unsafe"
 
 // Obtains a certificate from a data signature in XML format.
-func (m *Module) GetCertFromXML(xml string, signID int) ([]byte, error) {
+func (m *Module) GetCertFromXML(xml string, signID int) (string, error) {
 	// locking the module and unlocking it after completion.
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -28,7 +28,7 @@ func (m *Module) GetCertFromXML(xml string, signID int) ([]byte, error) {
 
 	// checking for errors.
 	if err := m.wrapError(rc); err != nil {
-		return nil, err
+		return "", err
 	}
-	return C.GoBytes(unsafe.Pointer(outCert), C.int(outCertLen)), nil
+	return C.GoString((*C.char)(outCert)), nil
 }
