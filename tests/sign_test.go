@@ -6,14 +6,27 @@ import (
 	"pki.gov.kz/go/kalkan"
 )
 
+var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
+
 func TestSignData(t *testing.T) {
-	_ = signDataTest(t)
+	_ = testSignData(t)
+}
+func TestSignXML(t *testing.T) {
+	_ = testSignXML(t)
 }
 
-func signDataTest(t *testing.T) string {
+func testSignData(t *testing.T) string {
 	data := "QOlCN2P7QVHU5mqcH"
-	flags := kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
 	sData, err := mod.SignData("", data, "", flags)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return sData
+}
+
+func testSignXML(t *testing.T) string {
+	data := "<test>data</test>"
+	sData, err := mod.SignXML(data, "", 0, "", "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
