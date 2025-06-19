@@ -20,11 +20,10 @@ func TestSignWSSE(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sData, err := mod.SignWSSE("", data, "", 0)
+	_, err = mod.SignWSSE("", data, "", 0)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log("WSSE signed data: ", sData)
 }
 
 func testSignData(t *testing.T) string {

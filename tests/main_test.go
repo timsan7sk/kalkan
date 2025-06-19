@@ -29,16 +29,19 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	mod, err = kalkan.Open(libName)
+	mod, err = kalkan.Open(libName, kalkan.TestOpts...)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	if err = mod.Init(); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
+	fmt.Println(err)
 	if err = mod.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 	m.Run()
 	mod.XMLFinalize()
