@@ -26,6 +26,7 @@ func TestSignWSSE(t *testing.T) {
 	}
 	t.Log("WSSE signed data: ", sData)
 }
+
 func testSignData(t *testing.T) string {
 	data := "QOlCN2P7QVHU5mqcH"
 	sData, err := mod.SignData("", data, "", flags)
