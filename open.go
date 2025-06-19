@@ -17,8 +17,10 @@ func Open(libName string) (*Module, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Module{
+	m := Module{
 		h:  h,
 		mu: sync.Mutex{},
-	}, nil
+	}
+	m.o.setDefaults()
+	return &m, nil
 }
