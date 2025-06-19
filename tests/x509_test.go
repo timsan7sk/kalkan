@@ -19,3 +19,10 @@ func TestX509ExportCertificateFromBuffer(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestX509LoadCertificateFromFile(t *testing.T) {
+	err := mod.X509LoadCertificateFromFile("GOST512.crt", kalkan.CertTypeUser)
+	if err != nil {
+		t.Fatal(err)
+	}
+}

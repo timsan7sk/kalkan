@@ -28,9 +28,6 @@ var (
 	testCertGOST2 string
 )
 
-// //go:embed gost1.cer
-// var testCertGOST1 string
-
 func TestMain(m *testing.M) {
 	mod, err = kalkan.Open(libName)
 	if err != nil {
