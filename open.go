@@ -12,7 +12,7 @@ import (
 )
 
 // Obtains the pointer to the Module.
-func Open(libName string) (*Module, error) {
+func Open(libName string, options ...Option) (*Module, error) {
 	h, err := dlOpen(libName)
 	if err != nil {
 		return nil, err
@@ -22,5 +22,8 @@ func Open(libName string) (*Module, error) {
 		mu: sync.Mutex{},
 	}
 	m.o.setDefaults()
+	for _, op := range options {
+		op(&m.o)
+	}
 	return &m, nil
 }
