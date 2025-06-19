@@ -26,3 +26,10 @@ func TestX509LoadCertificateFromFile(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestX509CertificateGetInfo(t *testing.T) {
+	_, err := mod.X509CertificateGetInfo(testCertGOST2, kalkan.CertPropCertCN)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
