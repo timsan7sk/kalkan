@@ -18,13 +18,13 @@ type Methods interface {
 
 const (
 	// Flags for singing JWT.
-	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
+	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutDER
 )
 
 // Error variable.
 var err error
 
-// Method implements the algorithm family of signing methods.
+// Implements the algorithm for signing.
 type Method struct {
 	Name   string
 	module *kalkan.Module
@@ -61,12 +61,12 @@ func (m *Method) Verify(signingString, signature string) error {
 }
 
 // Implements signing.
-func (m *Method) Sign(inData string) (signature, error) {
+func (m *Method) Sign(inData string) (string, error) {
 	v, err := m.module.SignData("", inData, "", flags)
 	if err != nil {
 		return "", err
 	}
-	return signature(v), nil
+	return v, nil
 }
 
 // Finializes work with library and frees the memory.

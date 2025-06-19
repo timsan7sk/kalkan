@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"encoding/base64"
 	"testing"
 	"time"
 
@@ -29,12 +30,15 @@ func TestNewToken(t *testing.T) {
 	if err = token.Method.LoadKeyStore(path, pwd); err != nil {
 		t.Fatal(err)
 	}
-	token.Signature, err = token.Method.Sign(token.StringBase64())
+	token.Signature, err = token.Method.Sign(token.String())
 	if err != nil {
 		t.Fatal(err)
 	}
-	token.ReplaceAll()
-	t.Logf("Finish: %+s\n", token.Finish)
+	e := base64.URLEncoding.WithPadding(base64.NoPadding)
+
+	t.Log(e.EncodeToString([]byte(token.Signature)))
+	// token.ReplaceAll()
+	// t.Logf("Finish: %+s\n", token.Finish)
 	token.Method.Finialize()
 	if err = token.Method.Close(); err != nil {
 		t.Fatal(err)
