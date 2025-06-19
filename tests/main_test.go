@@ -22,6 +22,8 @@ var (
 	mod *kalkan.Module
 	//go:embed GOST512.p12
 	testKeyGOST1 []byte
+	//go:embed GOST512.cer
+	testCertGOST1 string
 )
 
 // //go:embed gost1.cer
