@@ -33,3 +33,10 @@ func TestX509CertificateGetInfo(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestValidateCert(t *testing.T) {
+	_, err := mod.X509ValidateCertificate(testCertGOST2, kalkan.ValidateTypeOCSP, mod.Options().OCSP)
+	if err != nil {
+		t.Log(err)
+	}
+}
