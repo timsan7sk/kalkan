@@ -24,6 +24,8 @@ var (
 	testKeyGOST1 []byte
 	//go:embed GOST512.cer
 	testCertGOST1 string
+	//go:embed GOST512.crt
+	testCertGOST2 string
 )
 
 // //go:embed gost1.cer

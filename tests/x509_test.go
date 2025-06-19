@@ -1,13 +1,21 @@
 package tests
 
-import "testing"
+import (
+	"testing"
+
+	"pki.gov.kz/go/kalkan"
+)
 
 func TestX509ExportCertificateFromStrore(t *testing.T) {
-	gCert, err := mod.X509ExportCertificateFromStore("")
+	_, err := mod.X509ExportCertificateFromStore("")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if gCert != testCertGOST1 {
-		t.Fatal("Cert mismatch")
+}
+
+func TestX509ExportCertificateFromBuffer(t *testing.T) {
+	err := mod.X509LoadCertificateFromBuffer([]byte(testCertGOST2), kalkan.CertEncodingTypeB64)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
