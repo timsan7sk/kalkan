@@ -16,10 +16,6 @@ import (
 	"unsafe"
 )
 
-const (
-	length = 8192
-)
-
 // Validates the certificate.
 func (m *Module) X509ValidateCertificate(inCert string, validateType ValidateType, validatePath string) (string, error) {
 	// locking the module and unlocking it after completion.
@@ -33,15 +29,16 @@ func (m *Module) X509ValidateCertificate(inCert string, validateType ValidateTyp
 	cValidPath := C.CString(validatePath)
 	defer C.free(unsafe.Pointer(cValidPath))
 
-	var kcOutInfo [length]byte
-	kcOutInfoLen := length
+	var cOutInfo [8192]byte
+	cOutInfoLen := len(cOutInfo)
 
-	var kcGetResp [length]byte
-	kcGetRespLen := length
+	var cGetResp [8192]byte
+	cGetRespLen := len(cGetResp)
 
 	// validating certificate.
-	rc := int(C.x509_validate_certificate(cInCert, C.int(len(inCert)), C.int(int(validateType)), cValidPath, 0, (*C.char)(unsafe.Pointer(&kcOutInfo)), (*C.int)(unsafe.Pointer(&kcOutInfoLen)), 0, (*C.char)(unsafe.Pointer(&kcGetResp)), (*C.int)(unsafe.Pointer(&kcGetRespLen))))
+	rc := int(C.x509_validate_certificate(cInCert, C.int(len(inCert)), C.int(int(validateType)), cValidPath, 0,
+		(*C.char)(unsafe.Pointer(&cOutInfo)), (*C.int)(unsafe.Pointer(&cOutInfoLen)), 0, (*C.char)(unsafe.Pointer(&cGetResp)), (*C.int)(unsafe.Pointer(&cGetRespLen))))
 
 	// return result and checking for errors.
-	return string(trimSlice(kcOutInfo[:])), m.wrapError(rc)
+	return string(cOutInfo[:]), m.wrapError(rc)
 }
