@@ -31,7 +31,9 @@ func init() {
 | X509ExportCertificateFromStore	| + | +  | -    | Exports a certificate from the storage.																		|
 | X509CertificateGetInfo    		| + | +  | -    | Obtains field/extension values ​​from the certificate.														  |
 | X509ValidateCertificate			| + | +  | -    | Performs certificate verification, validity check, certificate chain building, OCSP or CRL revocation check.	|
-| SignData							| + | +  | -    | Signs the data.																								|
+| SignData							| + | +  | +	| Signs the data.																								|
+| SignDataArchive					| - | -  | -    | 																												|
+| SignWSSE							| + | +  | -    | Signs a SOAP message according to the WS-Security specification.												|
 | SignXML							| + | +  | -    | Signs XML file.																								|
 | VerifyData						| + | +  | -    | Provides signature verification.																				|
 | VerifyXML							| + | +  | -    | Provides signature verification of XML data.																	|
@@ -48,6 +50,5 @@ func init() {
 | KC_SetProxy						| + | +  | -    | Sets proxy server settings.																					|
 | ZipConSign						| - | -  | -    | Signs a file and then places it in a zip container.															|
 | ZipConVerify						| - | -  | -    | Verifies the signature of a zip container.																	|
-| SignWSSE							| + | +  | -    | Signs a SOAP message according to the WS-Security specification.												|
 | KC_GetCertFromCMS					| + | +  | -    | Obtains certificate from CMS format data.																		|
 | KC_getCertFromZipFile				| - | -  | -    | Obtains certificate from ZIP file.																			|
