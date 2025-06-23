@@ -1,9 +1,14 @@
 package tests
 
-import "testing"
+import (
+	"testing"
+
+	"pki.gov.kz/go/kalkan"
+)
 
 func TestVerifyData(t *testing.T) {
-	sData := testSignData(t)
+	var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
+	sData := testSignData(t, flags)
 	_, err := mod.VerifyData("", sData, "", flags)
 	if err != nil {
 		t.Fatal(err)
