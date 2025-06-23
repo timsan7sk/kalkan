@@ -18,7 +18,7 @@ type Methods interface {
 
 const (
 	// Flags for singing JWT.
-	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutDER
+	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
 )
 
 // Error variable.

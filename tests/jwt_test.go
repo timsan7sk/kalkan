@@ -17,7 +17,7 @@ func TestNewToken(t *testing.T) {
 		Check:     "OTP",
 	}
 	var method = jwt.Method{
-		Name: "GOST15",
+		Name: "ES256",
 	}
 	token := jwt.NewWithClaims(method, claims)
 	if err = token.Method.Open(libName); err != nil {
@@ -29,15 +29,15 @@ func TestNewToken(t *testing.T) {
 	if err = token.Method.LoadKeyStore(path, pwd); err != nil {
 		t.Fatal(err)
 	}
-	token.Signature, err = token.Method.Sign(token.String())
+	token.Signature, err = token.Method.Sign(token.StringBase64())
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("Signature: %s\n", token.Signature)
 	// e := base64.URLEncoding.WithPadding(base64.NoPadding)
 
 	// t.Log(e.EncodeToString([]byte(token.Signature)))
-	// token.ReplaceAll()
-	// t.Logf("Finish: %+s\n", token.Finish)
+	token.ReplaceAll()
 	// token.Method.Finialize()
 	if err = token.Method.Close(); err != nil {
 		t.Fatal(err)
