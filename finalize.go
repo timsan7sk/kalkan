@@ -11,6 +11,7 @@ void finalize() {
 */
 import "C"
 
+// Frees resources of the KalkanCryptCOM crypto provider and terminates the library.
 func (m *Module) Finalize() {
 	C.finalize()
 }

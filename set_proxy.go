@@ -16,6 +16,7 @@ import (
 	"unsafe"
 )
 
+// Set proxy server settings.
 func (m *Module) SetProxy(flag Flag, url *url.URL) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()

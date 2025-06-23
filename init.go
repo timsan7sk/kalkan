@@ -17,6 +17,7 @@ package kalkan
 */
 import "C"
 
+// Initializes the library.
 func (m *Module) Init() error {
 	f, err := dlSym(m.h)
 	if err != nil {
