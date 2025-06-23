@@ -12,6 +12,7 @@ unsigned long get_sig_alg_from_xml(const char* xml_in, int xml_in_size, char *re
 import "C"
 import "unsafe"
 
+// Obtains the signature algorithm from XML.
 func (m *Module) GetSignAlgorithmFromXML(xml string) (string, error) {
 	// locking the module and unlocking it after completion.
 	m.mu.Lock()

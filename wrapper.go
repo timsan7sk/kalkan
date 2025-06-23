@@ -31,6 +31,8 @@ type Kalkan interface {
 	GetLastError() ErrorCode
 	GetLastErrorString() (ErrorCode, string)
 
+	GetSignAlgorithmFromXML(xml string) (string, error)
+
 	SetProxy(flag Flag, url *url.URL) error
 	TSASetURL(tsaURL string) error
 
