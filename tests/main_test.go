@@ -12,7 +12,6 @@ import (
 const (
 	libName = "libkalkancryptwr-64.so.2" // Library name.
 	path    = "GOST512.p12"
-	pwd     = "Qazwsx!@#123"
 )
 
 var (
@@ -26,6 +25,8 @@ var (
 	testCertGOST1 string
 	//go:embed GOST512.crt
 	testCertGOST2 string
+	//go:embed pass.txt
+	pwd string
 )
 
 func TestMain(m *testing.M) {

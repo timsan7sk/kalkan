@@ -33,10 +33,6 @@ func TestNewToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Signature: %s\n", token.Signature)
-	// e := base64.URLEncoding.WithPadding(base64.NoPadding)
-
-	// t.Log(e.EncodeToString([]byte(token.Signature)))
 	token.ReplaceAll()
 	// token.Method.Finialize()
 	if err = token.Method.Close(); err != nil {
