@@ -14,7 +14,7 @@ func TestX509ExportCertificateFromStrore(t *testing.T) {
 }
 
 func TestX509ExportCertificateFromBuffer(t *testing.T) {
-	err := mod.X509LoadCertificateFromBuffer([]byte(testCertGOST2), kalkan.CertEncodingTypeB64)
+	err := mod.X509LoadCertificateFromBuffer(testCertGOST2, kalkan.CertEncodingTypeB64)
 	if err != nil {
 		t.Fatal(err)
 	}

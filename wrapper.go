@@ -38,7 +38,7 @@ type Kalkan interface {
 
 	X509CertificateGetInfo(inCert string, prop CertProp) (string, error)                                   // Obtains field/extension values ​​from a certificate.
 	X509ExportCertificateFromStore(alias string) (string, error)                                           // Exports a certificate from the store.
-	X509LoadCertificateFromBuffer(inCert []byte, flags CertEncodingType) error                             // Loads a certificate from a byte slice.
+	X509LoadCertificateFromBuffer(inCert string, flags CertEncodingType) error                             // Loads a certificate from a byte slice.
 	X509LoadCertificateFromFile(certPath string, certType CertType) error                                  // Loads cerificate from file.
 	X509ValidateCertificate(inCert string, validateType ValidateType, validatePath string) (string, error) // Validates the certificate.
 

@@ -19,6 +19,7 @@ func (m *Module) SignData(inSign, inData, alias string, flag Flag) (string, erro
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	// preparing variables and freeing memory when finished.
 	cAlias := C.CString(alias)
 	defer C.free(unsafe.Pointer(cAlias))
 
