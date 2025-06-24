@@ -26,8 +26,7 @@ func TestSignWSSE(t *testing.T) {
 }
 
 func testSignData(t *testing.T, flags kalkan.Flag) string {
-
-	data := "QOlCN2P7QVHU5mqcH"
+	data := "dGVzdA=="
 	sData, err := mod.SignData("", data, "", flags)
 	if err != nil {
 		t.Fatal(err)

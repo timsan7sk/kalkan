@@ -26,7 +26,7 @@ type Kalkan interface {
 
 	GetTimeFromSign(cms string, sigID int, flag Flag) (time.Time, error) // Obtains the signature time.
 
-	GetTokens(store StoreType) (string, int, error) // Obtains a string of connected storage devices and their number.
+	GetToken(store StoreType) (string, error) // Obtains a string of connected storage devices and their number.
 
 	GetLastError() ErrorCode                 // Obtains last error code.
 	GetLastErrorString() (ErrorCode, string) // Obtains the code and text of the last error.

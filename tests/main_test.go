@@ -39,7 +39,6 @@ func TestMain(m *testing.M) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println(err)
 	if err = mod.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
