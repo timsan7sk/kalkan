@@ -40,7 +40,7 @@ func init() {
 | SignXML							| + | +  | -    | Signs XML file.																								|
 | VerifyData						| + | +  | -    | Provides signature verification.																				|
 | VerifyXML							| + | +  | -    | Provides signature verification of XML data.																	|
-| UVerifyData						| + | +  | -    | Provides signature verification.																				|
+| UVerifyData						| - | -  | -    | Provides signature verification.																				|
 | KC_GetLastError					| + | +  | -    | Obtains error code of the functions operation.|
 | KC_GetLastErrorString				| + | +  | -    | Obtains protocol of the functions operation.																	|
 | KC_getSigAlgFromXML				| - | -  | -    | Obtains XML signature algorithm.																				|
@@ -50,7 +50,7 @@ func init() {
 | TSASetUrl							| + | +  | -    | Sets TSA service addresses.																					|
 | KC_GetTimeFromSig					| + | +  | -    | Obtains the signature time.																					|
 | KC_SetProxy						| + | +  | -    | Sets proxy server settings.																					|
-| KC_InsertTStoCMS					| + | +  | -    | |
+| KC_InsertTStoCMS					| - | -  | -    | |
 | KC_GetSignInfosFromDoc			| - | -  | -    | |
 | KC_CreateCMSfromDraftSign			| - | -  | -    | |
 | KC_GetTSfromDraftSign				| - | -  | -    | |

@@ -24,7 +24,8 @@ func (m *Module) SignHash(alias, inHash string, flags Flag) (string, error) {
 	defer C.free(unsafe.Pointer(cAlias))
 
 	cInHash := C.CString(inHash)
-	defer C.free(unsafe.Pointer(&cInHash))
+	defer C.free(unsafe.Pointer(cInHash))
+
 	inHashLength := len(inHash)
 	outSignLength := 50000 + 2*inHashLength
 	cOutSign := C.malloc(C.ulong(C.sizeof_uchar * outSignLength))
