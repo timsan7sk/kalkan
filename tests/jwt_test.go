@@ -14,7 +14,7 @@ func TestNewToken(t *testing.T) {
 		IssuedAt:  issuedAt,
 		ExpiresAt: expiresAt,
 		BIN:       "161140016747",
-		Check:     "OTP",
+		MCheck:    jwt.OTP,
 	}
 	var method = jwt.Method{
 		Name: "ES256",

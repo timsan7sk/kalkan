@@ -12,27 +12,21 @@ package jwt
 type Claims struct {
 	// the `iss` (Issuer) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.1
 	Issuer string `json:"iss,omitempty"`
-
 	// the `sub` (Subject) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.2
 	Subject string `json:"sub,omitempty"`
-
 	// the `aud` (Audience) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.3
 	Audience []string `json:"aud,omitempty"`
-
 	// the `exp` (Expiration Time) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4
 	ExpiresAt int64 `json:"exp,omitempty"`
-
 	// the `nbf` (Not Before) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.5
 	NotBefore int64 `json:"nbf,omitempty"`
-
 	// the `iat` (Issued At) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.6
 	IssuedAt int64 `json:"iat,omitempty"`
-
 	// the `jti` (JWT ID) claim. See https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.7
 	ID string `json:"jti,omitempty"`
-
-	//
+	// BIN of the organization that requested access to personal data.
 	BIN string `json:"cbin,omitempty"`
-	//
-	Check string `json:"mcheck,omitempty"`
+	// the method by which an organization has obtained confirmation of access
+	// to personal data from a personal data subject.
+	MCheck MCheck `json:"mcheck,omitempty"`
 }
