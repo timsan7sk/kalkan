@@ -35,7 +35,7 @@ func init() {
 | HashData							| + | +  | -    | Hashes data.																									|
 | SignData							| + | +  | +	| Signs the data.																								|
 | SignDataArchive					| - | -  | -    | |
-| SignHash							| - | -  | -    | Signs the input hashed data.																					|
+| SignHash							| + | +  | -    | Signs the input hashed data.																					|
 | SignWSSE							| + | +  | -    | Signs a SOAP message according to the WS-Security specification.												|
 | SignXML							| + | +  | -    | Signs XML file.																								|
 | VerifyData						| + | +  | -    | Provides signature verification.																				|
