@@ -16,6 +16,5 @@ func testHashData(t *testing.T) string {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(h)
 	return h
 }
