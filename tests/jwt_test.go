@@ -16,27 +16,9 @@ func TestNewToken(t *testing.T) {
 		BIN:       "161140016747",
 		MCheck:    jwt.OTP,
 	}
-	var method = jwt.Method{
-		Name: "ES256",
-	}
-	token := jwt.NewWithClaims(method, claims)
-	if err = token.Method.Open(libName); err != nil {
-		t.Fatal(err)
-	}
-	if err = token.Method.Init(); err != nil {
-		t.Fatal(err)
-	}
-	if err = token.Method.LoadKeyStore(path, pwd); err != nil {
-		t.Fatal(err)
-	}
-	token.Signature, err = token.Method.Sign(token.StringBase64())
+	token := jwt.New(claims, mod)
+	err := token.Sign()
 	if err != nil {
 		t.Fatal(err)
 	}
-	token.ReplaceAll()
-	// token.Method.Finialize()
-	if err = token.Method.Close(); err != nil {
-		t.Fatal(err)
-	}
-
 }
