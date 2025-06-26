@@ -14,6 +14,7 @@ type Kalkan interface {
 	HashData(alg HashAlg, flags Flag, inData string) (string, error) // Hashes data.
 
 	SignData(inSign, inData, alias string, flag Flag) (string, error)                                          // Signs data.
+	SignHash(alias, inHash string, flags Flag) (string, error)                                                 // Signs the input hashed data.
 	SignXML(xml, alias string, flags Flag, signNodeID, parentSignNode, parentNameSpace string) (string, error) // Signs data in XML format.
 	SignWSSE(alias, inData, signNodeID string, flags Flag) (string, error)                                     // Signs SOAP messages according to the WS-Security specification. Required for [SmartBridge]:https://sb.egov.kz/.
 
