@@ -43,11 +43,12 @@ func TestMain(m *testing.M) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	m.Run()
-	mod.XMLFinalize()
-	mod.Finalize()
+	x := m.Run()
+	os.Exit(x)
+	// defer mod.XMLFinalize()
+	// defer mod.Finalize()
 
-	if err = mod.Close(); err != nil {
-		fmt.Println(err)
-	}
+	// if err = mod.Close(); err != nil {
+	// 	fmt.Println(err)
+	// }
 }
