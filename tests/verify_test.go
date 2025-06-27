@@ -9,7 +9,6 @@ import (
 func TestVerifyData(t *testing.T) {
 	var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
 	inSign := testSignData(t, flags)
-	t.Log(inSign)
 	_, err := mod.VerifyData(inSign, "", "", flags)
 	if err != nil {
 		t.Fatal(err)
