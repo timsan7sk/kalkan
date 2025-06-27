@@ -6,7 +6,7 @@ type MCheck string
 
 const (
 	BIO MCheck = "BIO" // Organizational biometrics system.
-	BS  MCheck = "BS"  // Digital signature.
+	DS  MCheck = "DS"  // Digital signature.
 	DID MCheck = "DID" // Digital ID system.
 	OTP MCheck = "OTP" // One-time password.
 	PC  MCheck = "PC"  // Paper information carrier.
