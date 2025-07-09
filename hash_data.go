@@ -19,7 +19,7 @@ type HashAlg string
 const (
 	HashAlgSHA256 HashAlg = "sha256"
 	HashAlgGOST95 HashAlg = "Gost34311_95"
-	HashAlgGOST15 HashAlg = "Gost34311_2015"
+	HashAlgGOST15 HashAlg = "Gost34311_15"
 )
 
 // Hashes data.

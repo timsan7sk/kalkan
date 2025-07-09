@@ -11,7 +11,10 @@ package kalkan
 	}
 */
 import "C"
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 // Signs the input hashed data.
 func (m *Module) SignHash(alias, inHash string, flags Flag) (string, error) {
@@ -25,7 +28,7 @@ func (m *Module) SignHash(alias, inHash string, flags Flag) (string, error) {
 
 	cInHash := C.CString(inHash)
 	defer C.free(unsafe.Pointer(cInHash))
-
+	fmt.Printf("Hash: %s\n", inHash)
 	inHashLength := len(inHash)
 	outSignLength := 50000 + 2*inHashLength
 	cOutSign := C.malloc(C.ulong(C.sizeof_uchar * outSignLength))

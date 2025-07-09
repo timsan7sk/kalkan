@@ -11,15 +11,13 @@ func TestSignData(t *testing.T) {
 	_ = testSignData(t, flags)
 }
 
-// TODO: fix the test.
 func TestSignHash(t *testing.T) {
 	var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
 	h := testHashData(t)
-	s, err := mod.SignHash("", h, flags)
+	_, err := mod.SignHash("", h, flags)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(s)
 }
 func TestSignXML(t *testing.T) {
 	_ = testSignXML(t)
