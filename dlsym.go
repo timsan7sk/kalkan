@@ -15,7 +15,7 @@ import (
 func dlSym(h unsafe.Pointer) (unsafe.Pointer, error) {
 	cSym := C.CString("KC_GetFunctionList")
 	defer C.free(unsafe.Pointer(cSym))
-
+	C.dlerror()
 	p := C.dlsym(h, cSym)
 
 	if err := C.dlerror(); err != nil {
