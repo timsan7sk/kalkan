@@ -45,68 +45,52 @@ func (m *Module) X509CertificateGetInfo(inCert string, prop CertProp) (string, e
 	return C.GoString((*C.char)(data)), m.wrapError(rc)
 }
 
+// Draft.
+// TODO:
 func (m *Module) X509CertificateGetSummary(inCert string) (s Summary, err error) {
-	// locking the module and unlocking it after completion.
-	m.mu.Lock()
-	defer m.mu.Unlock()
 	v := reflect.ValueOf(s)
 	p := reflect.ValueOf(&s)
-	e := p.Elem()
+	// in := regexp.MustCompile(`[0-9]{12}$`)
+	// sn := regexp.MustCompile(`[A-Z0-9]{40}$`)
 	t := v.Type()
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		value := v.Field(i)
-		if k := e.Field(i).Kind(); k == reflect.String {
-			fmt.Println("String ", t.Field(i).Name)
+		pf := p.Elem().Field(i)
+		// if k := e.Field(i).Kind(); k == reflect.String {
+		n, err := strconv.ParseInt(t.Field(i).Tag.Get("cert_prop"), 0, 64)
+		if err != nil {
+		}
+		ttt, err := m.X509CertificateGetInfo(inCert, CertProp(n))
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			p.Elem().Field(i).SetString(ttt)
 
 		}
-		if field.Anonymous { // field.Anonymous indicates an embedded field
-			// if it's an embedded struct, iterate its fields
-			eVal := value
-			eTyp := eVal.Type()
+		// }
+		if field.Anonymous {
+			eTyp := value.Type()
 
 			for j := 0; j < eTyp.NumField(); j++ {
 				eField := eTyp.Field(j)
-				// eValue := eVal.Field(j)
-				// _ = eValue.Elem()
 				if l := len(eField.Tag.Get("cert_prop")); l > 0 {
-					// base 0 infers base from prefix
-					_, err := strconv.ParseInt(eField.Tag.Get("cert_prop"), 0, 64)
+
+					n, err := strconv.ParseInt(eField.Tag.Get("cert_prop"), 0, 64)
+					fmt.Printf("FielsName: %s, Tag: %d\n", eField.Name, n)
 					if err != nil {
-						return Summary{}, err
+						fmt.Println(err)
 					}
-					// embeddedFieldValue := embeddedVal.Field(j)
+					vvv, err := m.X509CertificateGetInfo(inCert, CertProp(n))
+					if err != nil {
+						fmt.Println(err)
+					}
+					// number := in.FindString(vvv)
+					pf.Field(j).SetString(vvv)
 				}
 			}
 		}
-		// fmt.Printf("Field: %+v, Tag: %+v\n", field.Name, field.Tag.Get("cert_prop"))
-
 	}
-	// t := p.Type()
-	// for i := 0; i < t.NumField(); i++ {
-	// 	// check if the field is an embedded struct
-	// 	if field.Anonymous { // field.Anonymous indicates an embedded field
-	// 		// if it's an embedded struct, iterate its fields
-	// 		eVal := value
-	// 		eTyp := eVal.Type()
-
-	// 		for j := 0; j < eTyp.NumField(); j++ {
-	// 			eField := eTyp.Field(j)
-	// 			// eValue := eVal.Field(j)
-	// 			// _ = eValue.Elem()
-	// 			if l := len(eField.Tag.Get("cert_prop")); l > 0 {
-	// 				// base 0 infers base from prefix
-	// 				intTag, err := strconv.ParseInt(eField.Tag.Get("cert_prop"), 0, 64)
-	// 				if err != nil {
-	// 					return Summary{}, err
-	// 				}
-	// 				// embeddedFieldValue := embeddedVal.Field(j)
-	// 				fmt.Printf("Embedded Field: %s, Tag: %08x\n", eField.Name, intTag)
-	// 			}
-	// 		}
-	// 	} else {
-	// 		fmt.Printf("Field: %s, Value: %v\n", field.Name, value.Interface())
-	// 	}
-	// }
+	fmt.Printf("%+v\n", s)
 	return Summary{}, nil
 }

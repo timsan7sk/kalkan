@@ -20,16 +20,16 @@ const ( // Constants defining the value of a field/extension in a request/certif
 	CertPropSubjectEmail        CertProp = 0x0000080e // Subject's email.
 	CertPropSubjectOrgName      CertProp = 0x0000080f // Name of the entity organization.
 	CertPropSubjectOrgUnitName  CertProp = 0x00000810 // Name of the organizational unit of the entity.
-	CertPropSubjectBc           CertProp = 0x00000811 // Business category of the subject.
-	CertPropSubjectDc           CertProp = 0x00000812 // Domain component of the subject.
+	CertPropSubjectBC           CertProp = 0x00000811 // Business category of the subject.
+	CertPropSubjectDC           CertProp = 0x00000812 // Domain component of the subject.
 	CertPropNotBefore           CertProp = 0x00000813 // Date valid from.
 	CertPropNotAfter            CertProp = 0x00000814 // Date valid until.
 	CertPropKeyUsage            CertProp = 0x00000815 // Using the key.
 	CertPropExtKeyUsage         CertProp = 0x00000816 // Extended key usage.
 	CertPropAuthKeyID           CertProp = 0x00000817 // Certification Authority Key Identifier.
 	CertPropSubjKeyID           CertProp = 0x00000818 // Subject key identifier.
-	CertPropCertCN              CertProp = 0x00000819 // Certificate serial number.
-	CertPropIssuerDN            CertProp = 0x0000081a // Distinguishing name of the publisher.
+	CertPropCertSN              CertProp = 0x00000819 // Certificate serial number.
+	CertPropIssuerDN            CertProp = 0x0000081a // Distinguishing name of the issuer.
 	CertPropSubjectDN           CertProp = 0x0000081b // Distinguishing name of the subject.
 	CertPropSignatureAlg        CertProp = 0x0000081c // Signature algorithm.
 	CertPropPubKey              CertProp = 0x0000081d // Obtaining a public key.
@@ -57,15 +57,15 @@ var AllProps = []CertProp{
 	CertPropSubjectEmail,
 	CertPropSubjectOrgName,
 	CertPropSubjectOrgUnitName,
-	CertPropSubjectBc,
-	CertPropSubjectDc,
+	CertPropSubjectBC,
+	CertPropSubjectDC,
 	CertPropNotBefore,
 	CertPropNotAfter,
 	CertPropKeyUsage,
 	CertPropExtKeyUsage,
 	CertPropAuthKeyID,
 	CertPropSubjKeyID,
-	CertPropCertCN,
+	CertPropCertSN,
 	CertPropIssuerDN,
 	CertPropSubjectDN,
 	CertPropSignatureAlg,

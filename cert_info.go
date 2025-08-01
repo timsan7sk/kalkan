@@ -1,12 +1,8 @@
 package kalkan
 
-import (
-	"time"
-)
-
 const (
-	OwnerIndividual   Owner = "individual"   // Certificate of an individual.
-	OwnerOrganization Owner = "organization" // Certificate of legal entity.
+	OwnerIndividual   = "individual"   // Certificate of an individual.
+	OwnerOrganization = "organization" // Certificate of legal entity.
 )
 
 // see: https://adilet.zan.kz/rus/docs/V2000021440
@@ -30,16 +26,18 @@ const (
 
 type (
 	Summary struct {
-		Owner Owner
+		Owner string `cert_prop:"0x00000815"` // Defines the form of ownership of the certificate owner.
 		CertSubject
 		CertOrganization
 		CertIssuer
-		PublicKey    string    `cert_prop:"0x0000081d"` // CertPropPubKey
-		SerialNumber string    `cert_prop:"0x00000819"` // CertPropCertCN
-		NotAfter     time.Time `cert_prop:"0x00000814"` // CertPropNotAfter
-		NotBefore    time.Time `cert_prop:"0x00000813"` // CertPropNotBefore
+		PublicKey    string `cert_prop:"0x0000081d"` // CertPropPubKey
+		SerialNumber string `cert_prop:"0x00000819"` // CertPropCertSN
+		OCSP         string `cert_prop:"0x0000081f"` // CertPropOCSP
+		// CRL          string `cert_prop:"0x00000820"` // CertPropGetCRL
+		// DeltaCRL string `cert_prop:"0x00000821"` // CertPropGetDeltaCRL
+		// NotAfter     time.Time `cert_prop:"0x00000814"` // CertPropNotAfter
+		// NotBefore    time.Time `cert_prop:"0x00000813"` // CertPropNotBefore
 	}
-	Owner           string // Defines the form of ownership of the certificate owner.
 	CertSubjectRole int
 	CertSubject     struct {
 		CommonName string `cert_prop:"0x0000080a"` // CertPropSubjectCommonName
@@ -47,16 +45,28 @@ type (
 		Country    string `cert_prop:"0x00000807"` // CertPropSubjectCountryName
 		IIN        string `cert_prop:"0x0000080d"` // CertPropSubjectSerialNumber
 		DN         string `cert_prop:"0x0000081b"` // CertPropSubjectDN
+		// SOPN       string `cert_prop:"0x00000808"` // CertPropSubjectSOPN
+		Locality string `cert_prop:"0x00000809"` // CertPropSubjectLocalityName
+		OrgName  string `cert_prop:"0x0000080f"` // CertPropSubjectOrgName
+		OrgUnit  string `cert_prop:"0x00000810"` // CertPropSubjectOrgUnitName
+		BC       string `cert_prop:"0x00000811"` // CertPropSubjectBC
+		DC       string `cert_prop:"0x00000812"` // CertPropSubjectDC
+		Email    string `cert_prop:"0x0000080e"` // CertPropSubjectEmail
+
 	}
 	CertOrganization struct {
-		Name        string          `cert_prop:"0x0000080f"` // CertPropSubjectOrgName
-		BIN         string          `cert_prop:"0x00000810"` // CertPropSubjectOrgUnitName
-		SubjectRole CertSubjectRole `cert_prop:""`
+		OrgName     string `cert_prop:"0x0000080f"` // CertPropSubjectOrgName
+		BIN         string `cert_prop:"0x00000810"` // CertPropSubjectOrgUnitName
+		SubjectRole string `cert_prop:"0x0000081e"` // CertPropPoliciesID
 	}
 	CertIssuer struct {
 		CommonName string `cert_prop:"0x00000806"` // CertPropIssuerCommonName
 		Country    string `cert_prop:"0x00000801"` // CertPropIssuerCountryName
-		DN         string `cert_prop:"0x0000081a"` // CertPropIssuerDN
+		Locality   string `cert_prop:"0x00000803"` // CertPropIssuerLocalityName
+		OrgName    string `cert_prop:"0x00000805"` // CertPropIssuerOrgUnitName
+		OrgUnit    string `cert_prop:"0x00000804"` // CertPropIssuerOrgName
+		// SOPN       string `cert_prop:"0x00000802"` // CertPropIssuerSOPN
+		DN string `cert_prop:"0x0000081a"` // CertPropIssuerDN
 	}
 )
 

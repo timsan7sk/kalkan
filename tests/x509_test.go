@@ -33,7 +33,7 @@ func TestX509CertificateGetSummary(t *testing.T) {
 	}
 }
 func TestX509CertificateGetInfo(t *testing.T) {
-	_, err := mod.X509CertificateGetInfo(testCertGOST2, kalkan.CertPropCertCN)
+	_, err := mod.X509CertificateGetInfo(testCertGOST2, kalkan.CertPropCertSN)
 	if err != nil {
 		t.Fatal(err)
 	}
