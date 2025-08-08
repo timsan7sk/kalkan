@@ -27,7 +27,7 @@ func TestX509LoadCertificateFromFile(t *testing.T) {
 	}
 }
 func TestX509CertificateGetSummary(t *testing.T) {
-	_, err := mod.X509CertificateGetSummary("")
+	_, err := mod.X509CertificateGetSummary(testCertGOST2)
 	if err != nil {
 		t.Fatal(err)
 	}
