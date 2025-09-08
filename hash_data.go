@@ -3,7 +3,7 @@ package kalkan
 /*
 #cgo LDFLAGS: -ldl
 #include <dlfcn.h>
-#include <strings.h>
+#include <string.h>
 #include "KalkanCrypt.h"
 
 unsigned long hash_data(char *algorithm, int flags, char *inData, int inDataLength, unsigned char *outData, int *outDataLength) {
@@ -34,9 +34,10 @@ func (m *Module) HashData(alg HashAlg, flags Flag, inData string) (string, error
 	defer C.free(unsafe.Pointer(cInData))
 	inDataLength := len(inData)
 
-	outDataLength := 50000 + 2*inDataLength
+	outDataLength := 2000
 	outData := C.malloc(C.ulong(C.sizeof_uchar * outDataLength))
 	defer C.free(outData)
+	C.memset(outData, 0, C.ulong(C.sizeof_uchar*outDataLength))
 
 	rc := int(C.hash_data(cAlg, C.int(int(flags)), cInData, C.int(inDataLength), (*C.uchar)(outData), (*C.int)(unsafe.Pointer(&outDataLength))))
 
