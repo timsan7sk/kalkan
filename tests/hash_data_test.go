@@ -10,25 +10,14 @@ import (
 )
 
 func TestHashData(t *testing.T) {
-	var h string
-
-	for i := 0; i <= 100; i++ {
-		h = testHashData(t)
-		t.Log("hashed: ", h)
-		raw, err := base64.StdEncoding.DecodeString(h)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Log("hash len: ", len(raw))
-		t.Log("ittertion: ", i)
-	}
+	h := testHashData(t)
+	t.Log("len:", len(h), "hashed: ", h)
 }
 
 func testHashData(t *testing.T) string {
 	flags := kalkan.FlagInBase64 | kalkan.FlagOutBase64 | kalkan.FlagHashGOST15
-	r := make([]byte, rand.UintN(8)+1)
+	r := make([]byte, rand.UintN(64)+1)
 	raw := base64.StdEncoding.EncodeToString(r)
-	t.Log("to hash: ", raw)
 	h, err := mod.HashData("", flags, raw)
 	if err != nil {
 		t.Fatal(err)
@@ -36,30 +25,15 @@ func testHashData(t *testing.T) string {
 	return h
 }
 
-func BenchmarkNashSameData(b *testing.B) {
-	b.ResetTimer()
-	for b.Loop() {
-		flags := kalkan.FlagInBase64 | kalkan.FlagOutBase64 | kalkan.FlagHashGOST15
-		raw := base64.StdEncoding.EncodeToString([]byte{1, 2})
-		h, err := mod.HashData("", flags, raw)
-		if err != nil {
-			b.Fatal(err)
-		}
-		b.Log("Hashed Data: ", h)
-	}
-}
-
 func BenchmarkDiffData(b *testing.B) {
 	b.ResetTimer()
 	for b.Loop() {
-		flags := kalkan.FlagInBase64 | kalkan.FlagOutBase64 | kalkan.FlagHashGOST15
-		r := make([]byte, rand.UintN(8)+1)
+		flags := kalkan.FlagInBase64 | kalkan.FlagOutDER | kalkan.FlagHashGOST15
+		r := make([]byte, rand.UintN(64)+1)
 		raw := base64.StdEncoding.EncodeToString(r)
-		b.Log("Raw Data: ", raw)
-		h, err := mod.HashData("", flags, raw)
+		_, err := mod.HashData("", flags, raw)
 		if err != nil {
 			b.Fatal(err)
 		}
-		b.Log("Hashed Data: ", h)
 	}
 }
