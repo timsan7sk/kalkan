@@ -6,8 +6,9 @@ import (
 	"pki.gov.kz/go/kalkan"
 )
 
+var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
+
 func TestSignData(t *testing.T) {
-	var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
 	_ = testSignData(t, flags)
 }
 
