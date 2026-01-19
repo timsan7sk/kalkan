@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"reflect"
+	"strings"
 
 	"pki.gov.kz/go/kalkan"
 )
@@ -15,13 +16,13 @@ const (
 )
 
 // Represents a JWT Token.  Different fields will be used depending on whether you're
-// creating or verifying a token.
+// creating or verifying a token
 type Token struct {
-	// Finish    string         // The complite token. Populated after ReplaceAll method.
+	// Finish    string         // The complite token. Populated after ReplaceAll method
 	Header    Header         // The first segment of the token
 	Claims    Claims         // The second segment of the token
-	Module    *kalkan.Module // The signing method used or to be used
-	Signature string         // The third segment of the token.
+	Module    *kalkan.Module // The KalkanCrypt module
+	Signature string         // The third segment of the token
 	// Valid     bool           // Is the token valid?  Populated when you Verify a token
 }
 
@@ -37,14 +38,12 @@ func New(claims Claims, mod *kalkan.Module) *Token {
 	}
 }
 
-// Marshal to JSON the t.Header and t.Claims, then encode them into a "URL and Filename safe" Base64 string.
-// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
-func (t Token) StringToSign() (string, error) {
+// Marshal to JSON the t.Header and t.Claims, then encode them into a Base64 string.
+func (t Token) stringForSign() (string, error) {
 	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
 		return "", errors.New("header or claims are empty")
 	}
 	// set encoder.
-	e := base64.URLEncoding.WithPadding(base64.NoPadding)
 	h, err := json.Marshal(t.Header)
 	if err != nil {
 		return "", err
@@ -53,39 +52,58 @@ func (t Token) StringToSign() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return e.EncodeToString(h) + "." + e.EncodeToString(c), nil
+	return base64.StdEncoding.EncodeToString(h) + "." + base64.StdEncoding.EncodeToString(c), nil
 }
 
-// Signs marshaled to JSON the t.Header and t.Claims encoded into a "URL and Filename safe" Base64 string
-// and assigns the result to t.Signature
+// Signs the t.Header and t.Claims elements encoded into a Base64 string
+// and assigns the result to the t.Signature filed.
+//
+// Signature encoden into Base64.
 func (t *Token) Sign() error {
-	// set data for singing.
-	data, err := t.StringToSign()
+	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
+		return errors.New("header, claims or signature are empty")
+	}
+	// get data for singing
+	data, err := t.stringForSign()
 	if err != nil {
 		return err
 	}
-	// singing data.
+	// singing data
 	s, err := t.Module.SignData("", data, "", flags)
 	if err != nil {
 		return err
 	}
-	// set encoder.
-	e := base64.URLEncoding.WithPadding(base64.NoPadding)
 	// assignment of the result
-	t.Signature = e.EncodeToString([]byte(s))
+	t.Signature = s
 	return nil
 }
 
-// Obtains JWT or error.
+// Obtains JWT encoded into "URL and Filename safe" Base64 string or error.
+//
+// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
 func (t *Token) GetToken() (string, error) {
-	if reflect.DeepEqual(t.Header, map[string]any{}) || reflect.DeepEqual(t.Claims, Claims{}) || t.Signature == "" {
-		return "", errors.New("header, claims, or signature are empty")
+	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) || t.Signature == "" {
+		return "", errors.New("header, claims or signature are empty")
 	}
-	hc, err := t.StringToSign()
+	hc, err := t.stringForSign()
 	if err != nil {
 		return "", err
 	}
-	return hc + "." + t.Signature, nil
+	shc := strings.Split(hc, ".")
+	bh, err := base64.StdEncoding.DecodeString(shc[0])
+	if err != nil {
+		return "", err
+	}
+	bc, err := base64.StdEncoding.DecodeString(shc[1])
+	if err != nil {
+		return "", err
+	}
+	bs, err := base64.StdEncoding.DecodeString(t.Signature)
+	if err != nil {
+		return "", err
+	}
+	e := base64.URLEncoding.WithPadding(base64.NoPadding)
+	return e.EncodeToString(bh) + "." + e.EncodeToString(bc) + "." + e.EncodeToString(bs), nil
 }
 
 // Replaces "/" to "_" and "+" to "-" and "=" to ""
