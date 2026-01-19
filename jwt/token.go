@@ -18,7 +18,7 @@ const (
 // creating or verifying a token.
 type Token struct {
 	// Finish    string         // The complite token. Populated after ReplaceAll method.
-	Header    map[string]any // The first segment of the token
+	Header    Header         // The first segment of the token
 	Claims    Claims         // The second segment of the token
 	Module    *kalkan.Module // The signing method used or to be used
 	Signature string         // The third segment of the token.
@@ -28,7 +28,7 @@ type Token struct {
 // Creates a new Token with the specified claims and KalkanCrypt module.
 func New(claims Claims, mod *kalkan.Module) *Token {
 	return &Token{
-		Header: map[string]any{
+		Header: Header{
 			"typ": "JWT",
 			"alg": "GOST15",
 		},
@@ -40,7 +40,7 @@ func New(claims Claims, mod *kalkan.Module) *Token {
 // Marshal to JSON the t.Header and t.Claims, then encode them into a "URL and Filename safe" Base64 string.
 // see https://datatracker.ietf.org/doc/html/rfc4648#page-8
 func (t Token) StringToSign() (string, error) {
-	if reflect.DeepEqual(t.Header, map[string]any{}) || reflect.DeepEqual(t.Claims, Claims{}) {
+	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
 		return "", errors.New("header or claims are empty")
 	}
 	// set encoder.
