@@ -39,7 +39,7 @@ func New(claims Claims, mod *kalkan.Module) *Token {
 }
 
 // Marshal to JSON the t.Header and t.Claims, then encode them into a Base64 string.
-func (t Token) stringForSign() (string, error) {
+func (t Token) StringForSign() (string, error) {
 	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
 		return "", errors.New("header or claims are empty")
 	}
@@ -64,7 +64,7 @@ func (t *Token) Sign() error {
 		return errors.New("header, claims or signature are empty")
 	}
 	// get data for singing
-	data, err := t.stringForSign()
+	data, err := t.StringForSign()
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (t *Token) GetToken() (string, error) {
 	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) || t.Signature == "" {
 		return "", errors.New("header, claims or signature are empty")
 	}
-	hc, err := t.stringForSign()
+	hc, err := t.StringForSign()
 	if err != nil {
 		return "", err
 	}
