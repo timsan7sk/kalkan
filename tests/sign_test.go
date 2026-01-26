@@ -13,7 +13,6 @@ func TestSignData(t *testing.T) {
 }
 
 func TestSignHash(t *testing.T) {
-	var flags = kalkan.FlagSignCMS | kalkan.FlagInBase64 | kalkan.FlagOutBase64
 	h := testHashData(t)
 	_, err := mod.SignHash("", h, flags)
 	if err != nil {
@@ -46,6 +45,12 @@ func testSignData(t *testing.T, flags kalkan.Flag) string {
 
 func testSignXML(t *testing.T) string {
 	data := "<test>data</test>"
+	// c, err := mod.X509ExportCertificateFromStore("")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// t.Log(c)
+	TestX509CertificateGetInfo(t)
 	sData, err := mod.SignXML(data, "", 0, "", "", "")
 	if err != nil {
 		t.Fatal(err)

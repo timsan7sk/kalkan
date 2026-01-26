@@ -11,7 +11,7 @@ import (
 
 const (
 	libName = "libkalkancryptwr-64.so.2" // Library name.
-	path    = "GOST512.p12"
+	path    = "nca_is.p12"
 )
 
 var (
@@ -25,7 +25,7 @@ var (
 	testCertGOST1 string
 	//go:embed GOST512.crt
 	testCertGOST2 string
-	//go:embed pass.txt
+	//go:embed pwd_is.txt
 	pwd string
 )
 
@@ -43,10 +43,14 @@ func TestMain(m *testing.M) {
 		log.Println(err)
 		os.Exit(1)
 	}
+	log.Printf("pwd: %s path: %s\n", pwd, path)
 	if err = mod.LoadKeyStore(path, pwd, "", kalkan.StoreTypePKCS12); err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
+	// code, s := mod.GetLastErrorString()
+	// log.Println(code)
+	// log.Println(s)
 	x := m.Run()
 	os.Exit(x)
 	// defer mod.XMLFinalize()
