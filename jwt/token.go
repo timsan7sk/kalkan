@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"reflect"
-	"strings"
 
 	"pki.gov.kz/go/kalkan"
 )
@@ -38,8 +37,10 @@ func New(claims Claims, mod *kalkan.Module) *Token {
 	}
 }
 
-// Marshal to JSON the t.Header and t.Claims, then encode them into a Base64 string.
-func (t Token) StringForSign() (string, error) {
+// Marshal to JSON the t.Header and t.Claims, then encode them into a "URL and Filename safe" Base64 string er error.
+//
+// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
+func (t Token) stringForSign() (string, error) {
 	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
 		return "", errors.New("header or claims are empty")
 	}
@@ -52,19 +53,20 @@ func (t Token) StringForSign() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return base64.StdEncoding.EncodeToString(h) + "." + base64.StdEncoding.EncodeToString(c), nil
+	e := base64.URLEncoding.WithPadding(base64.NoPadding)
+	return e.EncodeToString(h) + "." + e.EncodeToString(c), nil
 }
 
-// Signs the t.Header and t.Claims elements encoded into a Base64 string
+// Signs the t.Header and t.Claims elements encoded into a "URL and Filename safe" Base64 string
 // and assigns the result to the t.Signature filed.
 //
-// Signature encoden into Base64.
+// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
 func (t *Token) Sign() error {
 	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) {
 		return errors.New("header, claims or signature are empty")
 	}
 	// get data for singing
-	data, err := t.StringForSign()
+	data, err := t.stringForSign()
 	if err != nil {
 		return err
 	}
@@ -73,8 +75,13 @@ func (t *Token) Sign() error {
 	if err != nil {
 		return err
 	}
+	b, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		return err
+	}
+	e := base64.URLEncoding.WithPadding(base64.NoPadding)
 	// assignment of the result
-	t.Signature = s
+	t.Signature = e.EncodeToString(b)
 	return nil
 }
 
@@ -85,33 +92,9 @@ func (t *Token) GetToken() (string, error) {
 	if reflect.DeepEqual(t.Header, Header{}) || reflect.DeepEqual(t.Claims, Claims{}) || t.Signature == "" {
 		return "", errors.New("header, claims or signature are empty")
 	}
-	hc, err := t.StringForSign()
+	hc, err := t.stringForSign()
 	if err != nil {
 		return "", err
 	}
-	shc := strings.Split(hc, ".")
-	bh, err := base64.StdEncoding.DecodeString(shc[0])
-	if err != nil {
-		return "", err
-	}
-	bc, err := base64.StdEncoding.DecodeString(shc[1])
-	if err != nil {
-		return "", err
-	}
-	bs, err := base64.StdEncoding.DecodeString(t.Signature)
-	if err != nil {
-		return "", err
-	}
-	e := base64.URLEncoding.WithPadding(base64.NoPadding)
-	return e.EncodeToString(bh) + "." + e.EncodeToString(bc) + "." + e.EncodeToString(bs), nil
+	return hc + "." + t.Signature, nil
 }
-
-// Replaces "/" to "_" and "+" to "-" and "=" to ""
-// and assigns a value to t.Finish.
-// func (t *Token) ReplaceAll() {
-// 	data := t.StringBase64() + "." + t.Signature
-// 	out := strings.ReplaceAll(data, "/", "_")
-// 	out = strings.ReplaceAll(out, "+", "-")
-// 	out = strings.ReplaceAll(out, "=", "")
-// 	t.Finish = out
-// }
