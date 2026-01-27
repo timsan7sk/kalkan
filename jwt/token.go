@@ -11,7 +11,7 @@ import (
 
 const (
 	// Flags for singing JWT.
-	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64
+	flags kalkan.Flag = kalkan.FlagSignDraft | kalkan.FlagOutBase64 | kalkan.FlagNoCheckCertTime
 )
 
 // Represents a JWT Token.  Different fields will be used depending on whether you're
@@ -53,8 +53,7 @@ func (t Token) stringForSign() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	e := base64.URLEncoding.WithPadding(base64.NoPadding)
-	return e.EncodeToString(h) + "." + e.EncodeToString(c), nil
+	return encToURL(h) + "." + encToURL(c), nil
 }
 
 // Signs the t.Header and t.Claims elements encoded into a "URL and Filename safe" Base64 string
@@ -79,10 +78,17 @@ func (t *Token) Sign() error {
 	if err != nil {
 		return err
 	}
-	e := base64.URLEncoding.WithPadding(base64.NoPadding)
 	// assignment of the result
-	t.Signature = e.EncodeToString(b)
+	t.Signature = encToURL(b)
 	return nil
+}
+
+// Encode into "URL and Filename safe" Base64 string
+//
+// see https://datatracker.ietf.org/doc/html/rfc4648#page-8
+func encToURL(b []byte) string {
+	e := base64.URLEncoding.WithPadding(base64.NoPadding)
+	return e.EncodeToString(b)
 }
 
 // Obtains JWT encoded into "URL and Filename safe" Base64 string or error.
