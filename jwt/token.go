@@ -17,7 +17,6 @@ const (
 // Represents a JWT Token.  Different fields will be used depending on whether you're
 // creating or verifying a token
 type Token struct {
-	// Finish    string         // The complite token. Populated after ReplaceAll method
 	Header    Header         // The first segment of the token
 	Claims    Claims         // The second segment of the token
 	Module    *kalkan.Module // The KalkanCrypt module
