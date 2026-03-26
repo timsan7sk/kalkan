@@ -31,12 +31,16 @@ func TestX509CertificateGetSummary(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// t.Log(c)
 }
 func TestX509CertificateGetInfo(t *testing.T) {
-	_, err := mod.X509CertificateGetInfo(testCertGOST2, kalkan.CertPropCertSN)
+	c := testGetCertFromXML(t)
+	// t.Logf("Arg: %s\n", c[:516])
+	a, err := mod.X509CertificateGetInfo(c, kalkan.CertPropNotAfter)
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("Arg: %s\n", a)
 }
 
 func TestValidateCert(t *testing.T) {

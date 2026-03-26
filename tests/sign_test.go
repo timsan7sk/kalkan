@@ -50,7 +50,6 @@ func testSignXML(t *testing.T) string {
 	// 	t.Fatal(err)
 	// }
 	// t.Log(c)
-	TestX509CertificateGetInfo(t)
 	sData, err := mod.SignXML(data, "", 0, "", "", "")
 	if err != nil {
 		t.Fatal(err)

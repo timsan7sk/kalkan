@@ -1,5 +1,9 @@
 package kalkan
 
+import (
+	"strings"
+)
+
 const (
 	OwnerIndividual   = "individual"   // Certificate of an individual.
 	OwnerOrganization = "organization" // Certificate of legal entity.
@@ -73,4 +77,14 @@ type (
 func (s *Summary) Init() bool {
 
 	return true
+}
+
+// Trims string at the equal sign if string parts equal two and obtains last part.
+func TrimAtEqual(s string) string {
+	if strings.Contains(s, "=") {
+		if parts := strings.Split(s, "="); 2 == len(parts) {
+			return parts[len(parts)-1]
+		}
+	}
+	return s
 }

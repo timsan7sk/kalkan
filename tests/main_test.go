@@ -27,6 +27,8 @@ var (
 	testCertGOST2 string
 	//go:embed pwd_is.txt
 	pwd string
+	//go:embed pass.txt
+	pass string
 )
 
 func init() {
@@ -34,7 +36,7 @@ func init() {
 }
 
 func TestMain(m *testing.M) {
-	mod, err = kalkan.Open(libName, kalkan.TestOpts...)
+	mod, err = kalkan.Open(libName, kalkan.ProdOpts...)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)

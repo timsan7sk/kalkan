@@ -1,7 +1,9 @@
 package kalkan
 
+import "slices"
+
 // Defines the value of a field/extension in a request/certificate.
-type CertProp int
+type CertProp int64
 
 const ( // Constants defining the value of a field/extension in a request/certificate.
 	CertPropIssuerCountryName   CertProp = 0x00000801 // Country of issuer.
@@ -39,8 +41,14 @@ const ( // Constants defining the value of a field/extension in a request/certif
 	CertPropGetDeltaCRL         CertProp = 0x00000821 // Getting the delta CRL URL.
 )
 
+type CertProps []CertProp
+
+func (cp CertProp) IsExist() bool {
+	return slices.Contains(AllProps, cp)
+}
+
 //nolint:gochecknoglobals
-var AllProps = []CertProp{
+var AllProps = CertProps{
 	CertPropIssuerCountryName,
 	CertPropIssuerSOPN,
 	CertPropIssuerLocalityName,

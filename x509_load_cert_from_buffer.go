@@ -14,7 +14,7 @@ import (
 	"unsafe"
 )
 
-// Loads a certificate from a byte slice.
+// Loads a certificate from a string.
 func (m *Module) X509LoadCertificateFromBuffer(inCert string, flags CertEncodingType) error {
 	// locking the module and unlocking it after completion.
 	m.mu.Lock()
@@ -23,6 +23,7 @@ func (m *Module) X509LoadCertificateFromBuffer(inCert string, flags CertEncoding
 	// preparing variables and freeing memory when finished.
 	cInCert := C.CString(inCert)
 	defer C.free(unsafe.Pointer(cInCert))
+
 	// loading certificate.
 	rc := int(C.x509_load_certificate_from_buffer(cInCert, C.int(len(inCert)), C.int(int(flags))))
 	// checking for errors.
