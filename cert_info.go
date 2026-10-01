@@ -37,54 +37,54 @@ type (
 		PublicKey    string `cert_prop:"0x0000081d"` // CertPropPubKey
 		SerialNumber string `cert_prop:"0x00000819"` // CertPropCertSN
 		OCSP         string `cert_prop:"0x0000081f"` // CertPropOCSP
-		// CRL          string `cert_prop:"0x00000820"` // CertPropGetCRL
-		// DeltaCRL string `cert_prop:"0x00000821"` // CertPropGetDeltaCRL
-		// NotAfter     time.Time `cert_prop:"0x00000814"` // CertPropNotAfter
-		// NotBefore    time.Time `cert_prop:"0x00000813"` // CertPropNotBefore
 	}
+
 	CertSubjectRole int
-	CertSubject     struct {
+
+	CertSubject struct {
 		CommonName string `cert_prop:"0x0000080a"` // CertPropSubjectCommonName
 		LastName   string `cert_prop:"0x0000080b"` // CertPropSubjectGivenName
 		Country    string `cert_prop:"0x00000807"` // CertPropSubjectCountryName
 		IIN        string `cert_prop:"0x0000080d"` // CertPropSubjectSerialNumber
 		DN         string `cert_prop:"0x0000081b"` // CertPropSubjectDN
-		// SOPN       string `cert_prop:"0x00000808"` // CertPropSubjectSOPN
-		Locality string `cert_prop:"0x00000809"` // CertPropSubjectLocalityName
-		OrgName  string `cert_prop:"0x0000080f"` // CertPropSubjectOrgName
-		OrgUnit  string `cert_prop:"0x00000810"` // CertPropSubjectOrgUnitName
-		BC       string `cert_prop:"0x00000811"` // CertPropSubjectBC
-		DC       string `cert_prop:"0x00000812"` // CertPropSubjectDC
-		Email    string `cert_prop:"0x0000080e"` // CertPropSubjectEmail
-
+		Locality   string `cert_prop:"0x00000809"` // CertPropSubjectLocalityName
+		OrgName    string `cert_prop:"0x0000080f"` // CertPropSubjectOrgName
+		OrgUnit    string `cert_prop:"0x00000810"` // CertPropSubjectOrgUnitName
+		BC         string `cert_prop:"0x00000811"` // CertPropSubjectBC
+		DC         string `cert_prop:"0x00000812"` // CertPropSubjectDC
+		Email      string `cert_prop:"0x0000080e"` // CertPropSubjectEmail
 	}
+
 	CertOrganization struct {
 		OrgName     string `cert_prop:"0x0000080f"` // CertPropSubjectOrgName
 		BIN         string `cert_prop:"0x00000810"` // CertPropSubjectOrgUnitName
 		SubjectRole string `cert_prop:"0x0000081e"` // CertPropPoliciesID
 	}
+
 	CertIssuer struct {
 		CommonName string `cert_prop:"0x00000806"` // CertPropIssuerCommonName
 		Country    string `cert_prop:"0x00000801"` // CertPropIssuerCountryName
 		Locality   string `cert_prop:"0x00000803"` // CertPropIssuerLocalityName
 		OrgName    string `cert_prop:"0x00000805"` // CertPropIssuerOrgUnitName
 		OrgUnit    string `cert_prop:"0x00000804"` // CertPropIssuerOrgName
-		// SOPN       string `cert_prop:"0x00000802"` // CertPropIssuerSOPN
-		DN string `cert_prop:"0x0000081a"` // CertPropIssuerDN
+		DN         string `cert_prop:"0x0000081a"` // CertPropIssuerDN
 	}
 )
 
 func (s *Summary) Init() bool {
-
+	if s.BIN != "" {
+		s.Owner = OwnerOrganization
+	} else {
+		s.Owner = OwnerIndividual
+	}
 	return true
 }
 
-// Trims string at the equal sign if string parts equal two and obtains last part.
+// TrimAtEqual извлекает значение после знака '='.
+// Алгебраическая оптимизация: использование IndexByte исключает аллокации строк (в отличие от Split).
 func TrimAtEqual(s string) string {
-	if strings.Contains(s, "=") {
-		if parts := strings.Split(s, "="); 2 == len(parts) {
-			return parts[len(parts)-1]
-		}
+	if idx := strings.IndexByte(s, '='); idx >= 0 {
+		return s[idx+1:]
 	}
 	return s
 }

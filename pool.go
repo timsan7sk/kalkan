@@ -9,50 +9,48 @@ import (
 
 var (
 	ErrPoolClosed     = errors.New("kalkan pool is closed")
-	ErrAcquireTimeout = errors.New("timeout acquiring kalkan instance from pool")
+	ErrAcquireTimeout = errors.New("timeout acquiring instance from pool")
 )
 
-// KalkanProvider определяет контракт получения экземпляра Kalkan для выполнения операции.
-type KalkanProvider interface {
-	Do(ctx context.Context, fn func(k Kalkan) error) error
-	Close() error
-}
-
-// Pool управляет пулом экземпляров Kalkan для обеспечения параллелизма CGO.
-type Pool struct {
-	instances chan Kalkan
+// Pool — потокобезопасный обобщенный пул ресурсов на основе каналов.
+// Использование дженериков позволяет переиспользовать пул для любых CGO сущностей.
+type Pool[T any] struct {
+	instances chan T
 	mu        sync.RWMutex
 	closed    bool
+	closeFunc func(T) error // Вариативный замыкатель для финализации
 }
 
-// NewPool создает и инициализирует пул экземпляров Kalkan.
-func NewPool(size int, libPath string, options ...Option) (*Pool, error) {
+// NewPool инициализирует пул ресурсов.
+// Принимает фабричную функцию и опциональные вариативные конфигураторы (...).
+func NewPool[T any](size int, factory func() (T, error), closeFunc func(T) error, opts ...func(*Pool[T])) (*Pool[T], error) {
 	if size <= 0 {
-		size = 4 // Значение по умолчанию
+		size = 1
 	}
 
-	p := &Pool{
-		instances: make(chan Kalkan, size),
+	p := &Pool[T]{
+		instances: make(chan T, size),
+		closeFunc: closeFunc,
+	}
+
+	for _, opt := range opts {
+		opt(p)
 	}
 
 	for i := 0; i < size; i++ {
-		mod, err := Open(libPath, options...)
+		inst, err := factory()
 		if err != nil {
 			p.Close()
-			return nil, fmt.Errorf("failed to initialize kalkan instance %d: %w", i, err)
+			return nil, fmt.Errorf("pool initialization failed at instance %d: %w", i, err)
 		}
-		if err := mod.Init(); err != nil {
-			p.Close()
-			return nil, fmt.Errorf("failed to init kalkan module %d: %w", i, err)
-		}
-		p.instances <- mod
+		p.instances <- inst
 	}
 
 	return p, nil
 }
 
-// Do выполняет функцию fn с выделенным из пула экземпляром Kalkan.
-func (p *Pool) Do(ctx context.Context, fn func(k Kalkan) error) error {
+// Do исполняет функцию-замыкание, конкурентно извлекая экземпляр из пула.
+func (p *Pool[T]) Do(ctx context.Context, fn func(inst T) error) error {
 	p.mu.RLock()
 	if p.closed {
 		p.mu.RUnlock()
@@ -61,18 +59,17 @@ func (p *Pool) Do(ctx context.Context, fn func(k Kalkan) error) error {
 	p.mu.RUnlock()
 
 	select {
-	case instance := <-p.instances:
-		defer func() {
-			p.instances <- instance
-		}()
-		return fn(instance)
+	case inst := <-p.instances:
+		// Гарантированный возврат инстанса обратно в канал (Lease Release)
+		defer func() { p.instances <- inst }()
+		return fn(inst)
 	case <-ctx.Done():
 		return ctx.Err()
 	}
 }
 
-// Close грациозно закрывает все экземпляры Kalkan и освобождает ресурсы C-библиотеки.
-func (p *Pool) Close() error {
+// Close безопасно завершает работу пула, опустошая канал и вызывая closeFunc.
+func (p *Pool[T]) Close() error {
 	p.mu.Lock()
 	if p.closed {
 		p.mu.Unlock()
@@ -84,15 +81,15 @@ func (p *Pool) Close() error {
 
 	var errs []error
 	for inst := range p.instances {
-		inst.XMLFinalize()
-		inst.Finalize()
-		if err := inst.Close(); err != nil {
-			errs = append(errs, err)
+		if p.closeFunc != nil {
+			if err := p.closeFunc(inst); err != nil {
+				errs = append(errs, err)
+			}
 		}
 	}
 
 	if len(errs) > 0 {
-		return fmt.Errorf("errors closing kalkan pool: %v", errs)
+		return fmt.Errorf("errors closing pool: %v", errs)
 	}
 	return nil
 }

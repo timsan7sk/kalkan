@@ -1,6 +1,8 @@
 package kalkan
 
-import "slices"
+import (
+	"slices"
+)
 
 // Defines the value of a field/extension in a request/certificate.
 type CertProp int64
