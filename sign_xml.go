@@ -41,7 +41,23 @@ func (m *Module) SignXML(xml, alias string, flags Flag, signNodeID, parentSignNo
 	cParentNameSpace := C.CString(parentNameSpace)
 	defer C.free(unsafe.Pointer(cParentNameSpace))
 
-	// singing XML data.
+	// signing XML data.
 	rc := int(C.sign_xml(cAlias, C.int(flags), cInData, C.int(inDataLength), (*C.uchar)(outSign), (*C.int)(unsafe.Pointer(&outSignLength)), cSignNodeID, cParentSignNode, cParentNameSpace))
-	return C.GoStringN((*C.char)(outSign), C.int(outSignLength)), m.wrapError(rc)
+
+	if err := m.wrapError(rc); err != nil {
+		return "", err
+	}
+
+	actualLen := int(outSignLength)
+	if actualLen <= 0 {
+		return "", nil
+	}
+
+	signSlice := unsafe.Slice((*byte)(outSign), actualLen)
+
+	if signSlice[actualLen-1] == 0 {
+		actualLen--
+	}
+
+	return C.GoStringN((*C.char)(outSign), C.int(actualLen)), nil
 }

@@ -5,9 +5,9 @@ package kalkan
 #include <dlfcn.h>
 #include "KalkanCrypt.h"
 
-	unsigned long sign_wsse(char *alias, int flags, char *inData, int inDataLength, unsigned char *outSign, int *outSignLength, char *signNodeId) {
-	    return kc_funcs->SignWSSE(alias, flags, inData, inDataLength, outSign, outSignLength, signNodeId);
-	}
+unsigned long sign_wsse(char *alias, int flags, char *inData, int inDataLength, unsigned char *outSign, int *outSignLength, char *signNodeId) {
+    return kc_funcs->SignWSSE(alias, flags, inData, inDataLength, outSign, outSignLength, signNodeId);
+}
 */
 import "C"
 import (
@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	xmlnsSOAP = "http://schemas.xmlsoap.org/soap/envelope/"
-	xmlnsWSU  = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlnsSOAP = "http://xmlsoap.org"
+	xmlnsWSU  = "http://oasis-open.org"
 	replace   = "replace"
 )
 
@@ -35,7 +35,7 @@ type soapBody struct {
 	Content string `xml:",chardata"`
 }
 
-// Signs SOAP messages according to the WS-Security specification. Required for [SmartBridge]:https://sb.egov.kz/.
+// Signs SOAP messages according to the WS-Security specification. Required for [SmartBridge]:https://egov.kz.
 func (m *Module) SignWSSE(alias, inData, signNodeID string, flags Flag) (string, error) {
 	// locking the module and unlocking it after completion.
 	m.mu.Lock()
@@ -56,8 +56,23 @@ func (m *Module) SignWSSE(alias, inData, signNodeID string, flags Flag) (string,
 	cSignNodeID := C.CString(signNodeID)
 	defer C.free(unsafe.Pointer(cSignNodeID))
 
-	// singing data.
+	// signing data.
 	rc := int(C.sign_wsse(cAlias, C.int(flags), cInData, C.int(inDataLength), (*C.uchar)(outSign), (*C.int)(unsafe.Pointer(&outSignLength)), cSignNodeID))
 
-	return C.GoStringN((*C.char)(outSign), C.int(outSignLength)), m.wrapError(rc)
+	if err := m.wrapError(rc); err != nil {
+		return "", err
+	}
+
+	actualLen := int(outSignLength)
+	if actualLen <= 0 {
+		return "", nil
+	}
+
+	signSlice := unsafe.Slice((*byte)(outSign), actualLen)
+
+	if signSlice[actualLen-1] == 0 {
+		actualLen--
+	}
+
+	return C.GoStringN((*C.char)(outSign), C.int(actualLen)), nil
 }

@@ -33,8 +33,6 @@ func (m *Module) X509CertificateGetInfo(inCert string, prop CertProp) (string, e
 	cInCert := C.CString(inCert)
 	defer C.free(unsafe.Pointer(cInCert))
 
-	// Выделяем буфер в памяти Go. Это безопаснее и быстрее, чем C.malloc.
-	// CGO разрешает передавать указатель на память Go в Си-функции, если они не сохраняют этот указатель асинхронно.
 	buf := make([]byte, 32768)
 	outLen := C.int(len(buf))
 
@@ -47,7 +45,6 @@ func (m *Module) X509CertificateGetInfo(inCert string, prop CertProp) (string, e
 		&outLen,
 	))
 
-	// Делегируем проверку ошибок встроенному механизму (заменяет прямую проверку C.KCR_OK)
 	if err := m.wrapError(rc); err != nil {
 		return "", err
 	}
@@ -57,9 +54,7 @@ func (m *Module) X509CertificateGetInfo(inCert string, prop CertProp) (string, e
 		return "", nil
 	}
 
-	// Защита от Buffer Overread: используем C.GoStringN с точным фактическим размером,
-	// игнорируя неинициализированный хвост буфера.
-	return C.GoStringN((*C.char)(unsafe.Pointer(&buf[0])), C.int(actualLen)), nil
+	return C.GoString((*C.char)(unsafe.Pointer(&buf[0]))), nil
 }
 
 // X509CertificateGetSummary заполняет структуру Summary с использованием рефлексивного обхода (AST-like traversal).
@@ -73,7 +68,7 @@ func (m *Module) X509CertificateGetSummary(inCert string) (*Summary, error) {
 	return s, nil
 }
 
-// populateTags — рекурсивная функция обхода структуры. Поддерживает композицию (Anonymous/Embedded Fields).
+// populateTags — функция обхода структуры.
 func (m *Module) populateTags(v reflect.Value, inCert string) {
 	t := v.Type()
 
@@ -101,8 +96,6 @@ func (m *Module) populateTags(v reflect.Value, inCert string) {
 		if cp.IsExist() {
 			val, err := m.X509CertificateGetInfo(inCert, cp)
 
-			// Атомарная установка значения с отсечением префиксов (TrimAtEqual).
-			// Использование TrimAtEqual на уровне бизнес-логики сохраняет чистоту низкоуровневой X509CertificateGetInfo.
 			if err == nil && val != "" && fieldValue.CanSet() && fieldValue.Kind() == reflect.String {
 				fieldValue.SetString(TrimAtEqual(val))
 			}

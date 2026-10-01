@@ -15,11 +15,9 @@ import "unsafe"
 
 // Signs data.
 func (m *Module) SignData(inSign, inData, alias string, flag Flag) (string, error) {
-	// lock and ulock mutex.
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	// preparing variables and freeing memory when finished.
 	cAlias := C.CString(alias)
 	defer C.free(unsafe.Pointer(cAlias))
 
@@ -27,7 +25,6 @@ func (m *Module) SignData(inSign, inData, alias string, flag Flag) (string, erro
 	defer C.free(unsafe.Pointer(cInData))
 
 	inDataLength := len(inData)
-
 	outSignLength := 50000 + 2*inDataLength
 	cOutSign := C.malloc(C.ulong(C.sizeof_uchar * outSignLength))
 	defer C.free(cOutSign)
@@ -38,5 +35,20 @@ func (m *Module) SignData(inSign, inData, alias string, flag Flag) (string, erro
 
 	rc := int(C.sign_data(cAlias, C.int(int(flag)), cInData, C.int(inDataLength), (*C.uchar)(cInSign), C.int(inSignLength), (*C.uchar)(cOutSign), (*C.int)(unsafe.Pointer(&outSignLength))))
 
-	return C.GoStringN((*C.char)(cOutSign), C.int(outSignLength)), m.wrapError(rc)
+	if err := m.wrapError(rc); err != nil {
+		return "", err
+	}
+
+	actualLen := int(outSignLength)
+	if actualLen <= 0 {
+		return "", nil
+	}
+
+	signSlice := unsafe.Slice((*byte)(cOutSign), actualLen)
+
+	if signSlice[actualLen-1] == 0 {
+		actualLen--
+	}
+
+	return C.GoStringN((*C.char)(cOutSign), C.int(actualLen)), nil
 }
