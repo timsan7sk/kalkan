@@ -50,14 +50,14 @@ func (m *Module) X509CertificateGetInfo(inCert string, prop CertProp) (string, e
 func (m *Module) X509CertificateGetSummary(inCert string) (s Summary, err error) {
 	v := reflect.ValueOf(s)
 	p := reflect.ValueOf(&s)
-	st := reflect.TypeOf(s)
+	st := reflect.TypeFor[Summary]()
 	// in := regexp.MustCompile(`[0-9]{12}$`)
 	// sn := regexp.MustCompile(`[A-Z0-9]{40}$`)
-	t := v.Type()
+	// t := v.Type()
 	for i := 0; i < st.NumField(); i++ {
 		if !st.Field(i).Anonymous {
-			if c := t.Field(i).Tag.Get("cert_prop"); c != "" {
-				n, err := strconv.ParseInt(t.Field(i).Tag.Get("cert_prop"), 0, 64)
+			if c := v.Type().Field(i).Tag.Get("cert_prop"); c != "" {
+				n, err := strconv.ParseInt(v.Type().Field(i).Tag.Get("cert_prop"), 0, 64)
 				if err != nil {
 					log.Println(err)
 				}
@@ -71,10 +71,34 @@ func (m *Module) X509CertificateGetSummary(inCert string) (s Summary, err error)
 					}
 				}
 			}
+		} else {
+			for j := 0; j < v.Field(i).Type().NumField(); j++ {
+				f := v.Field(i).Type().Field(j)
+				if len(f.Tag.Get("cert_prop")) > 0 {
+					// log.Println("PeField.Tag.Get:", eField.Tag.Get("cert_prop"))
+
+					n, err := strconv.ParseInt(f.Tag.Get("cert_prop"), 0, 64)
+					// log.Printf("FieldName: %s, Tag: %d\n", eField.Name, n)
+					if err != nil {
+						log.Println(err)
+					}
+					if cp := CertProp(n); cp.IsExist() {
+						vvv, err := m.X509CertificateGetInfo(inCert, cp)
+						if err != nil {
+							// continue
+							log.Println("X509CertificateGetInfo: ", err)
+						} else {
+							p.Elem().Field(i).Field(j).SetString(TrimAtEqual(vvv))
+						}
+						// number := in.FindString(vvv)
+					}
+				}
+			}
 
 		}
 	}
-	log.Printf("FieldName: %+v", p)
+	log.Printf("p: %+v\n", p)
+	log.Printf("s: %+v\n", s)
 	// for i := 0; i < t.NumField(); i++ {
 	// field := t.Field(i)
 
@@ -117,5 +141,5 @@ func (m *Module) X509CertificateGetSummary(inCert string) (s Summary, err error)
 	// 	log.Printf("Field: %s\tValue: %v\n", reflect.ValueOf(s).Type().Field(i).Name, reflect.ValueOf(s).Field(i).Interface())
 
 	// }
-	return Summary{}, nil
+	return
 }
