@@ -36,6 +36,6 @@ func (m *Module) SignHash(alias, inHash string, flags Flag) (string, error) {
 	// singing hashed data.
 	rc := int(C.sign_hash(cAlias, C.int(int(flags)), cInHash, C.int(inHashLength), (*C.uchar)(cOutSign), (*C.int)(unsafe.Pointer(&outSignLength))))
 
-	return C.GoString((*C.char)(cOutSign)), m.wrapError(rc)
+	return C.GoStringN((*C.char)(cOutSign), C.int(outSignLength)), m.wrapError(rc)
 
 }

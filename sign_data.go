@@ -38,5 +38,5 @@ func (m *Module) SignData(inSign, inData, alias string, flag Flag) (string, erro
 
 	rc := int(C.sign_data(cAlias, C.int(int(flag)), cInData, C.int(inDataLength), (*C.uchar)(cInSign), C.int(inSignLength), (*C.uchar)(cOutSign), (*C.int)(unsafe.Pointer(&outSignLength))))
 
-	return C.GoString((*C.char)(cOutSign)), m.wrapError(rc)
+	return C.GoStringN((*C.char)(cOutSign), C.int(outSignLength)), m.wrapError(rc)
 }
